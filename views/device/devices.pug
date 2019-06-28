@@ -1,0 +1,44 @@
+extends ../layout
+
+block content
+    h1=title
+    br
+    table.table.table-hover#deviceTable
+        thead
+            tr
+                th(scope='col') Name
+                th(scope='col') Status
+                th(scope='col') Client
+                th(scope='col') Location
+                th(scope='col') Consultant
+                th(scope='col')
+        tbody
+            each device, i in devices
+                tr
+                    td
+                        h6
+                            a(href="/device/"+device._id)=device.name
+                    td 
+                        h5
+                            if device.status.online=='0'
+                                span.badge.badge-danger Offline
+                            else
+                                span.badge.badge-success Online
+                    td
+                        h6=device.client
+                    td
+                        h6=device.location
+                    td
+                        h6=device.consultant
+                    td
+                        .dropdown
+                            a#dropdownMenuLink.btn.btn-secondary.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                | Access 
+                            .dropdown-menu(aria-labelledby='dropdownMenuLink')
+                                a.dropdown-item(href="/shell/"+device._id) Launch Shell
+                                a.dropdown-item(href='#') Connect Via SSH
+                                a.dropdown-item(href='#') Connect Via RDP
+                                a.dropdown-item(href='#') Manage Files
+                                .dropdown-divider
+                                a.dropdown-item(href='#') Edit
+                                a.dropdown-item(href='#') Delete

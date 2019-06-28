@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+    h1=title
+    br
+    table.table.table-hover.table-striped
+        thead
+            tr
+                th(scope='col') Name
+                th(scope='col') Title
+                th(scope='col') Email
+                th(scope='col') State
+                th(scope='col') Role
+                th(scope='col')
+        tbody
+            each user, i in users
+                tr
+                    td
+                        h6=user.profile.name
+                    td 
+                        h6=user.profile.title
+                    td
+                        h6=user.email
+                    td
+                        h5
+                            if user.profile.state=='0'
+                                span.badge.badge-danger Disabled
+                            else
+                                span.badge.badge-success Enabled
+                    td
+                        if user.profile.role == '0'
+                            h6 Admin
+                        else
+                            h6 User
+                    td.text-center
+                        if user.profile.state == 0
+                            button.btn.btn-light(type='button') Unlock Account
+                        else
+                            button.btn.btn-light(type='button') Lock Account
+                        button.btn.btn-light(type='button') Edit
+                        button.btn.btn-danger(type='button') Delete

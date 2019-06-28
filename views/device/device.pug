@@ -1,0 +1,29 @@
+extends ../layout
+
+block content
+  h1=device.name
+  p.lead #{device.client} - #{device.consultant}
+  hr
+  .row
+    .col-md-2
+    .col-md-8
+      ul.list-group
+        li.list-group-item Id: #{device._id}
+        li.list-group-item State: #{device.status.state}
+        li.list-group-item Ship Date: #{device.status.shipDate}
+        li.list-group-item Return Date: #{device.status.returnDate}
+        li.list-group-item Online: #{device.status.online}
+        li.list-group-item Public IP: #{device.status.publicIP}
+        li.list-group-item Model: #{device.model}
+        li.list-group-item Location: #{device.location}
+        li.list-group-item Name: #{device.pointOfContact.name}
+        li.list-group-item Number: #{device.pointOfContact.number}
+        li.list-group-item Email: #{device.pointOfContact.email}
+        li.list-group-item Consultant: #{device.consultant}
+        li.list-group-item Internal IP: #{device.networkConfig.internalIP}
+        li.list-group-item Subnet: #{device.networkConfig.subnet}
+        li.list-group-item Gateway: #{device.networkConfig.gateway}
+        li.list-group-item DNS 1: #{device.networkConfig.dns1}
+        li.list-group-item DNS 2: #{device.networkConfig.dns2}
+        li.list-group-item Notes: #{device.notes}
+        
