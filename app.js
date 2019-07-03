@@ -142,6 +142,7 @@ app.get('/users/disable/:id', passportConfig.isAuthenticated, userController.dis
 app.get('/users/delete/:id', passportConfig.isAuthenticated, userController.deleteUser);
 app.get('/users/edit/:id', passportConfig.isAuthenticated, userController.getEditUser);
 app.post('/users/edit/:id', passportConfig.isAuthenticated, userController.postEditUser);
+app.get('/retro', passportConfig.isAuthenticated, userController.retro);
 app.get('/devices', passportConfig.isAuthenticated, deviceController.getDevices);
 app.get('/devices/:user', passportConfig.isAuthenticated, deviceController.userDevices);
 app.get('/device/:id', passportConfig.isAuthenticated, deviceController.getDevice);

@@ -165,7 +165,6 @@ exports.postUpdateProfile = (req, res, next) => {
     user.email = req.body.email || '';
     user.profile.name = req.body.name || '';
     user.profile.title = req.body.title || '';
-    console.log(req.body.theme)
     if(req.body.theme=='on'){
       user.theme = 'dark'
     }
@@ -441,7 +440,6 @@ exports.getUsers = (req, res) => {
   }
   else{
   User.find({}, (err, users) => {
-    console.log(users);
     res.render('account/users', {
       title: 'User Management',
       users: users
@@ -546,4 +544,18 @@ exports.postEditUser = (req, res, next) => {
       });
     });
   }
+};
+
+exports.retro = (req, res, next) => {
+  User.findById(req.user.id, (err, user) => {
+    if (err) { return next(err); }
+    user.theme = 'hacker'
+    user.save((err) => {
+      if (err) {
+        return next(err);
+      }
+      req.flash('success', { msg: 'Profile information has been updated.' });
+      res.redirect('/');
+    });
+  });
 };

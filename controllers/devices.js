@@ -5,7 +5,6 @@ const Device = require('../models/Device');
  */
 exports.getDevices = (req, res) => {
   Device.find({}, (err, devices) => {
-    console.log(devices);
     res.render('device/devices', {
       title: 'All Devices',
       devices: devices
@@ -18,7 +17,6 @@ exports.getDevices = (req, res) => {
  */
 exports.userDevices = (req, res) => {
   Device.find({ consultant: req.params.user }, (err, devices) => {
-    console.log(devices);
     res.render('device/devices', {
       title: 'My Devices',
       devices: devices
@@ -33,7 +31,6 @@ exports.userDevices = (req, res) => {
 exports.getDevice = (req, res, next) => {
   Device.findOne({ _id: req.params.id }, (err, existingRecord) => {
     if (existingRecord){
-    console.log(existingRecord);
     var name = existingRecord.name;
     res.render('device/device', {
       title: name,
