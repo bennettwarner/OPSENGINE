@@ -118,9 +118,10 @@ app.use('/', express.static(path.join(__dirname, 'public'), { maxAge: 3155760000
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/popper.js/dist/umd'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/jquery/dist'), { maxAge: 31557600000 }));
-app.use('/js/lib/datatables', express.static(path.join(__dirname, 'node_modules/datatables/media'), { maxAge: 31557600000 }));
+app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/datatables/media/js'), { maxAge: 31557600000 }));
 app.use('/js/lib/xterm', express.static(path.join(__dirname, 'node_modules/xterm/dist/'), { maxAge: 31557600000 }));
 app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free/webfonts'), { maxAge: 31557600000 }));
+app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/bootstrap4-toggle/js'), { maxAge: 31557600000 }));
 
 /**
  * Primary app routes.
@@ -145,7 +146,7 @@ app.get('/devices', passportConfig.isAuthenticated, deviceController.getDevices)
 app.get('/devices/:user', passportConfig.isAuthenticated, deviceController.userDevices);
 app.get('/device/:id', passportConfig.isAuthenticated, deviceController.getDevice);
 app.post('/device/:id', passportConfig.isAuthenticated, deviceController.postDevice);
-app.get('/device/add', passportConfig.isAuthenticated, deviceController.addDevice);
+app.get('/device/add/', passportConfig.isAuthenticated, deviceController.addDevice);
 //app.post('/device/add', passportConfig.isAuthenticated, deviceController.addDevice);
 app.get('/shell/:id', passportConfig.isAuthenticated, deviceController.getShell);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);

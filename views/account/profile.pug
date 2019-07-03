@@ -39,7 +39,14 @@ block content
           if user.profile.title == 'Other'  
             option(selected='selected') Other
           else
-            option Other
+            option Other    
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='email') Dark Theme
+      .col-md-7
+        if user.theme == 'dark'
+          input(type='checkbox', name='theme', id='theme', checked=true, data-toggle='toggle')
+        else
+          input(type='checkbox', name='theme', id='theme', checked=false, data-toggle='toggle')
     .form-group
       .offset-sm-3.col-md-7.pl-2
         button.btn.btn.btn-primary(type='submit')

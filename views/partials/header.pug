@@ -3,39 +3,75 @@
     a.navbar-brand(href='/')
       i.fas.fa-mountain
       | SPIKE
-    button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
-      span.sr-only Toggle navigation
-      span.navbar-toggler-icon
-    .collapse.navbar-collapse
-      ul.nav.navbar-nav
-        li.nav-item(class=(title === 'Home') ? 'active' : undefined)
-          a.nav-link(href='/') Home
-        if user
-          li.nav-item(class=(title === 'My Devices') ? 'active' : undefined)
-            a.nav-link(href='/devices/'+user.id) My Devices
-          li.nav-item(class=(title === 'All Devices') ? 'active' : undefined)
-            a.nav-link(href='/devices') All Devices
-          li.nav-item(class=(title === 'Request Deployment') ? 'active' : undefined)
-            a.nav-link(href='/devicerequest') Request Deployment
-          li.nav-item(class=(title === 'Provision Device') ? 'active' : undefined)
-            a.nav-link(href='/devices/add') Provision Device
-      ul.nav.navbar-nav.ml-auto
-        if !user
-          li.nav-item(class=(title === 'Login') ? 'active' : undefined)
-            a.nav-link(href='/login') Login
-          li.nav-item(class=(title === 'Create Account') ? 'active' : undefined)
-            a.nav-link(href='/signup') Create Account
-        else
-          li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
-            a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')
-              span= user.profile.name || user.email || user.id
-              i.caret
-            ul.dropdown-menu
-              li.dropdown-item
-                a(href='/account') My Account
-              if user.profile.role == '0'
+    if user.theme=='hacker'
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+        ul.nav.navbar-nav
+          li.nav-item(class=(title === 'Home') ? 'active' : undefined)
+            a.nav-link(href='/') Home
+          if user
+            li.nav-item(class=(title === 'My Devices') ? 'active' : undefined)
+              a.nav-link(href='/devices/'+user.id) My Devices
+            li.nav-item(class=(title === 'All Devices') ? 'active' : undefined)
+              a.nav-link(href='/devices') All Devices
+            li.nav-item(class=(title === 'Request Deployment') ? 'active' : undefined)
+              a.nav-link(href='/devicerequest') Request Deployment
+            li.nav-item(class=(title === 'Provision Device') ? 'active' : undefined)
+              a.nav-link(href='/devices/add') Provision Device
+        ul.nav.navbar-nav.ml-auto
+          if !user
+            li.nav-item(class=(title === 'Login') ? 'active' : undefined)
+              a.nav-link(href='/login') Login
+            li.nav-item(class=(title === 'Create Account') ? 'active' : undefined)
+              a.nav-link(href='/signup') Create Account
+          else
+            li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
+              a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')
+                span= user.profile.name || user.email || user.id
+                i.caret
+              ul.dropdown-menu
                 li.dropdown-item
-                  a(href='/users') User Managment
-              li.divider.dropdown-item
-              li.dropdown-item
-                a(href='/logout') Logout
+                  a(href='/account') My Account
+                if user.profile.role == '0'
+                  li.dropdown-item
+                    a(href='/users') User Managment
+                li.divider.dropdown-item
+                li.dropdown-item
+                  a(href='/logout') Logout
+    else
+      button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+        span.sr-only Toggle navigation
+        span.navbar-toggler-icon
+      .collapse.navbar-collapse
+        ul.nav.navbar-nav
+          li.nav-item(class=(title === 'Home') ? 'active' : undefined)
+            a.nav-link(href='/') Home
+          if user
+            li.nav-item(class=(title === 'My Devices') ? 'active' : undefined)
+              a.nav-link(href='/devices/'+user.id) My Devices
+            li.nav-item(class=(title === 'All Devices') ? 'active' : undefined)
+              a.nav-link(href='/devices') All Devices
+            li.nav-item(class=(title === 'Request Deployment') ? 'active' : undefined)
+              a.nav-link(href='/devicerequest') Request Deployment
+            li.nav-item(class=(title === 'Provision Device') ? 'active' : undefined)
+              a.nav-link(href='/devices/add') Provision Device
+        ul.nav.navbar-nav.ml-auto
+          if !user
+            li.nav-item(class=(title === 'Login') ? 'active' : undefined)
+              a.nav-link(href='/login') Login
+            li.nav-item(class=(title === 'Create Account') ? 'active' : undefined)
+              a.nav-link(href='/signup') Create Account
+          else
+            li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
+              a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')
+                span= user.profile.name || user.email || user.id
+                i.caret
+              ul.dropdown-menu
+                li.dropdown-item
+                  a(href='/account') My Account
+                if user.profile.role == '0'
+                  li.dropdown-item
+                    a(href='/users') User Managment
+                li.divider.dropdown-item
+                li.dropdown-item
+                  a(href='/logout') Logout
+

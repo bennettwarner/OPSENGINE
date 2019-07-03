@@ -8,8 +8,12 @@ html
     meta(name='csrf-token', content=_csrf)
     title #{title} - SPIKE
     link(rel='shortcut icon', href='/favicon.png')
-    link(rel='stylesheet', href='/css/main.css')
-    link(rel='stylesheet', href='/js/lib/datatables/css/jquery.dataTables.min.css')
+    if user.theme == 'hacker'
+      link(rel='stylesheet', href='https://kristopolous.github.io/BOOTSTRA.386/assets/css/bootstrap.css')
+    else if user.theme == 'dark'
+      link(rel='stylesheet', href='/css/main_dark.css')
+    else
+      link(rel='stylesheet', href='/css/main.css')      
 
     block head
 
@@ -25,6 +29,6 @@ html
     script(src='/js/lib/jquery.min.js')
     script(src='/js/lib/popper.min.js')
     script(src='/js/lib/bootstrap.min.js')
-    script(src='/js/lib/datatables/js/jquery.dataTables.min.js')
-    script(src='/js/demo.js')
+    script(src='/js/lib/jquery.dataTables.min.js')
+    script(src='/js/lib/bootstrap4-toggle.min.js')
     script(src='/js/main.js')

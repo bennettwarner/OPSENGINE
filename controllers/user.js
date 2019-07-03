@@ -116,7 +116,8 @@ exports.postSignup = (req, res, next) => {
       title: '',
       role: role,
       state: state,
-    }
+    },
+    theme: 'light'
   });
 
   User.findOne({ email: req.body.email }, (err, existingUser) => {
@@ -164,6 +165,13 @@ exports.postUpdateProfile = (req, res, next) => {
     user.email = req.body.email || '';
     user.profile.name = req.body.name || '';
     user.profile.title = req.body.title || '';
+    console.log(req.body.theme)
+    if(req.body.theme=='on'){
+      user.theme = 'dark'
+    }
+    else{
+      user.theme = 'light'
+    }
     user.save((err) => {
       if (err) {
         if (err.code === 11000) {
