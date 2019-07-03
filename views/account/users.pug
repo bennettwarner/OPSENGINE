@@ -33,9 +33,14 @@ block content
                         else
                             h6 User
                     td.text-center
-                        if user.profile.state == 0
-                            button.btn.btn-light(type='button') Unlock Account
+                        if i == 0
+                            button.btn.btn-light(role='button', disabled='disabled') Disable Account
+                            button.btn.btn-light(type='button', disabled='disabled') Edit
+                            button.btn.btn-danger(type='button', disabled='disabled') Delete
                         else
-                            button.btn.btn-light(type='button') Lock Account
-                        button.btn.btn-light(type='button') Edit
-                        button.btn.btn-danger(type='button') Delete
+                            if user.profile.state == 0
+                                a.btn.btn-light(href='/users/enable/'+ user._id, role='button') &nbsp;Enable Account
+                            else
+                                a.btn.btn-light(href='/users/disable/'+ user._id, role='button') Disable Account
+                            a.btn.btn-light(href='/users/edit/'+ user._id, role='button') Edit
+                            a.btn.btn-danger(href='users/delete/'+ user._id, onclick="return confirm('Are you sure you want to delete "+user.email+"?');", role='button') Delete

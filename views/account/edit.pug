@@ -1,0 +1,60 @@
+extends ../layout
+
+block content
+  .pb-2.mt-2.mb-4.border-bottom
+    h3 User Information
+
+  form(action='/users/edit/'+current_user._id, method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group.row
+        label.col-md-3.col-form-label.font-weight-bold.text-right(for='name') Email
+        .col-md-7
+            h5=current_user.email
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='name') Name
+      .col-md-7
+        input.form-control(type='text', name='name', id='name', value=current_user.profile.name, autocomplete='name')
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='title') Title
+      .col-md-7
+        select.form-control(type='text', name='title', id='title', value=current_user.profile.title, autocomplete)
+          if current_user.profile.title == ''
+            option(selected='selected')
+          if current_user.profile.title == 'Intern'  
+            option(selected='selected') Intern
+          else
+            option Intern
+          if current_user.profile.title == 'Staff Consultant'  
+            option(selected='selected') Staff Consultant
+          else
+            option Staff Consultant
+          if current_user.profile.title == 'Senior Consultant'  
+            option(selected='selected') Senior Consultant
+          else
+            option Senior Consultant
+          if current_user.profile.title == 'Practice Lead'  
+            option(selected='selected') Practice Lead
+          else
+            option Pratice Lead
+          if current_user.profile.title == 'Other'  
+            option(selected='selected') Other
+          else
+            option Other
+    .form-group.row
+      label.col-md-3.col-form-label.font-weight-bold.text-right(for='role') Role
+      .col-md-7
+        select.form-control(type='text', name='role', id='role', value=current_user.profile.role, autocomplete)
+          if current_user.profile.role == '0'  
+            option(selected='selected') Admin
+          else
+            option Admin
+          if current_user.profile.role == '1'  
+            option(selected='selected') User
+          else
+            option User
+
+    .form-group
+      .offset-sm-3.col-md-7.pl-2
+        button.btn.btn.btn-primary(type='submit')
+          i.fas.fa-pencil-alt.fa-sm
+          | Update User

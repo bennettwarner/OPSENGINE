@@ -440,3 +440,102 @@ exports.getUsers = (req, res) => {
     });
   });}
 };
+
+/**
+ * GET /users/enable/:id
+ */
+exports.enableUser = (req, res) => {
+  if(req.user.profile.role!= '0'){
+    res.redirect('/');
+  }
+  else{
+  User.findById(req.params.id, (err, user) => {
+    if (err) { return next(err); }
+    user.profile.state = true;
+    user.save((err) => {
+      if (err) {
+        return next(err);
+      }  
+    res.redirect('/users');
+    });
+  });
+}};
+
+/**
+ * GET /users/disable/:id
+ */
+exports.disableUser = (req, res) => {
+  if(req.user.profile.role!= '0'){
+    res.redirect('/');
+  }
+  else{
+  User.findById(req.params.id, (err, user) => {
+    if (err) { return next(err); }
+    user.profile.state = false;
+    user.save((err) => {
+      if (err) {
+        return next(err);
+      }  
+    res.redirect('/users');
+    });
+  });
+}};
+
+/**
+ * GET /users/delete/:id
+ */
+exports.deleteUser = (req, res) => {
+  if(req.user.profile.role!= '0'){
+    res.redirect('/');
+  }
+  else{
+  User.remove({ _id: req.params.id}, (err, user) => {
+    if (err) { return next(err); }
+    res.redirect('/users');
+    });
+  }
+};
+
+/**
+ * GET /user/edit/:id
+ * Profile page.
+ */
+exports.getEditUser = (req, res) => {
+  User.findById(req.params.id, (err, user) => {
+    if (err) { return next(err); }
+    res.render('account/edit', {
+      title: 'Edit User',
+      current_user: user
+    });
+  });
+};
+
+/**
+ * POST /users/edit/:id
+ * Update profile information.
+ */
+exports.postEditUser = (req, res, next) => {
+  if(req.user.profile.role!= '0'){
+    res.redirect('/');
+  }
+  else{
+    User.findById(req.params.id, (err, user) => {
+      if (err) { return next(err); }
+      user.profile.name = req.body.name || '';
+      user.profile.title = req.body.title || '';
+      if (req.body.role == 'Admin'){
+        user.profile.role = '0'
+      }
+      else{
+        user.profile.role = '1'
+      }
+      user.save((err) => {
+        if (err) {
+          return next(err);
+        }
+        req.flash('success', { msg: 'Profile information has been updated.' });
+        res.redirect('/users');
+      });
+    });
+  }
+};
