@@ -8,12 +8,15 @@ html
     meta(name='csrf-token', content=_csrf)
     title #{title} - SPIKE
     link(rel='shortcut icon', href='/favicon.png')
-    if user.theme == 'hacker'
-      link(rel='stylesheet', href='/css/hacker.css')
-    else if user.theme == 'dark'
-      link(rel='stylesheet', href='/css/main_dark.css')
-    else
-      link(rel='stylesheet', href='/css/main.css')      
+    if !user 
+      link(rel='stylesheet', href='/css/main.css')  
+    else    
+      if user.theme == 'hacker'
+        link(rel='stylesheet', href='/css/hacker.css')
+      else if user.theme == 'dark'
+        link(rel='stylesheet', href='/css/main_dark.css')
+      else
+        link(rel='stylesheet', href='/css/main.css')      
 
     block head
 

@@ -29,7 +29,9 @@ block content
                                 span.badge.badge-success Enabled
                     td
                         if user.profile.role == '0'
-                            h6 Admin
+                            h6 Global Admin
+                        else if user.profile.role == '2'
+                            h6 Provisioning Admin
                         else
                             h6 User
                     td.text-center

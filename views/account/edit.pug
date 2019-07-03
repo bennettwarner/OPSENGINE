@@ -32,10 +32,10 @@ block content
             option(selected='selected') Senior Consultant
           else
             option Senior Consultant
-          if current_user.profile.title == 'Practice Lead'  
-            option(selected='selected') Practice Lead
+          if current_user.profile.title == 'Managing Consultant'  
+            option(selected='selected') Managing Consultant
           else
-            option Pratice Lead
+            option Managing Consultant
           if current_user.profile.title == 'Other'  
             option(selected='selected') Other
           else
@@ -45,13 +45,18 @@ block content
       .col-md-7
         select.form-control(type='text', name='role', id='role', value=current_user.profile.role, autocomplete)
           if current_user.profile.role == '0'  
-            option(selected='selected') Admin
+            option(selected='selected') Global Admin
           else
-            option Admin
+            option Global Admin
+          if current_user.profile.role == '2'  
+            option(selected='selected') Provisioning Admin
+          else
+            option Provisioning Admin
           if current_user.profile.role == '1'  
             option(selected='selected') User
           else
             option User
+
 
     .form-group
       .offset-sm-3.col-md-7.pl-2

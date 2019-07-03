@@ -529,8 +529,11 @@ exports.postEditUser = (req, res, next) => {
       if (err) { return next(err); }
       user.profile.name = req.body.name || '';
       user.profile.title = req.body.title || '';
-      if (req.body.role == 'Admin'){
+      if (req.body.role == 'Global Admin'){
         user.profile.role = '0'
+      }
+      if (req.body.role == 'Provisioning Admin'){
+        user.profile.role = '2'
       }
       else{
         user.profile.role = '1'
