@@ -12,7 +12,9 @@ html
       link(rel='stylesheet', href='/css/main.css')  
     else    
       if user.theme == 'hacker'
-        link(rel='stylesheet', href='/css/hacker.css')
+        link(rel='stylesheet', href='/css/hacker.css') 
+      else if user.theme == 'geo'
+        link(rel='stylesheet', href='/css/geo.css')
       else if user.theme == 'dark'
         link(rel='stylesheet', href='/css/main_dark.css')
       else

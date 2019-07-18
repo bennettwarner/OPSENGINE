@@ -44,7 +44,7 @@
                 li.dropdown-item
                   a(href='/logout') Logout
     else
-      if user.theme=='hacker'
+      if user.theme=='hacker' || user.theme=='geo'
         button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
           ul.nav.navbar-nav
             li.nav-item(class=(title === 'Home') ? 'active' : undefined)
