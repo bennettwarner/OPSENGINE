@@ -11,38 +11,11 @@
         ul.nav.navbar-nav
           li.nav-item(class=(title === 'Home') ? 'active' : undefined)
             a.nav-link(href='/') Home
-          if user
-            li.nav-item(class=(title === 'My Devices') ? 'active' : undefined)
-              a.nav-link(href='/devices/'+user.id) My Devices
-            li.nav-item(class=(title === 'All Devices') ? 'active' : undefined)
-              a.nav-link(href='/devices') All Devices
-            li.nav-item(class=(title === 'Request Deployment') ? 'active' : undefined)
-              a.nav-link(href='/devicerequest') Request Deployment
-            if user.profile.role == '0' || user.profile.role == '2'
-              li.nav-item(class=(title === 'Manage Requests') ? 'active' : undefined)
-                a.nav-link(href='/devicerequest') Manage Requests
-              li.nav-item(class=(title === 'Provision Device') ? 'active' : undefined)
-                a.nav-link(href='/devices/add') Provision Device
         ul.nav.navbar-nav.ml-auto
-          if !user
             li.nav-item(class=(title === 'Login') ? 'active' : undefined)
               a.nav-link(href='/login') Login
             li.nav-item(class=(title === 'Create Account') ? 'active' : undefined)
               a.nav-link(href='/signup') Create Account
-          else
-            li.dropdown(class=(title === 'Account Management') ? 'active' : undefined).nav-item
-              a.dropdown-toggle.nav-link(href='#', data-toggle='dropdown')
-                span= user.profile.name || user.email || user.id
-                i.caret
-              ul.dropdown-menu
-                li.dropdown-item
-                  a(href='/account') My Account
-                if user.profile.role == '0'
-                  li.dropdown-item
-                    a(href='/users') User Managment
-                li.divider.dropdown-item
-                li.dropdown-item
-                  a(href='/logout') Logout
     else
       if user.theme=='hacker' || user.theme=='geo'
         button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
@@ -50,17 +23,32 @@
             li.nav-item(class=(title === 'Home') ? 'active' : undefined)
               a.nav-link(href='/') Home
             if user
-              li.nav-item(class=(title === 'My Devices') ? 'active' : undefined)
-                a.nav-link(href='/devices/'+user.id) My Devices
-              li.nav-item(class=(title === 'All Devices') ? 'active' : undefined)
-                a.nav-link(href='/devices') All Devices
-              li.nav-item(class=(title === 'Request Deployment') ? 'active' : undefined)
-                a.nav-link(href='/devicerequest') Request Deployment
-              if user.profile.role == '0' || user.profile.role == '2'
-                li.nav-item(class=(title === 'Manage Requests') ? 'active' : undefined)
-                  a.nav-link(href='/devicerequest') Manage Requests
-                li.nav-item(class=(title === 'Provision Device') ? 'active' : undefined)
-                  a.nav-link(href='/devices/add') Provision Device
+              li.nav-item.dropdown.hoverdrop
+                a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                  | Implants
+                .dropdown-menu(aria-labelledby='navbarDropdown')
+                  a.dropdown-item(href='/implants/'+user.id) My Implants
+                  a.dropdown-item(href='/implants') All Implants
+                  a.dropdown-item(href='/deployImplant') Request Deployment
+                  if user.profile.role == '0' || user.profile.role == '2'
+                    .dropdown-divider
+                    a.dropdown-item(href='/implantRequests') Manage Requests
+              li.nav-item.dropdown.hoverdrop
+                a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                  | Attack Infrastructure
+                .dropdown-menu(aria-labelledby='navbarDropdown')
+                  a.dropdown-item(href='/infrastructure/'+user.id) My Infrastructure
+                  a.dropdown-item(href='/infrastructure') All Infrastructure
+                  a.dropdown-item(href='/deployInfrastructure') Create Infrastructure
+              li.nav-item.dropdown.hoverdrop
+                a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                  | Tools
+                .dropdown-menu(aria-labelledby='navbarDropdown')
+                  a.dropdown-item(href='https://gophish.a-lignpt.com:3333') Phishing
+                  a.dropdown-item(href='https://dev.hackharder.net') Development
+                  a.dropdown-item(href='https://github.com/SerpicoProject/Serpico') Reporting
+                  a.dropdown-item(href='https://dev.hackharder.net/zach/Super-Tasty-Wiki/wiki/_pages') Wiki
+                  a.dropdown-item(href='https://pass.hackharder.net') Passwords                  
           ul.nav.navbar-nav.ml-auto
             if !user
               li.nav-item(class=(title === 'Login') ? 'active' : undefined)
@@ -77,7 +65,7 @@
                     a(href='/account') My Account
                   if user.profile.role == '0'
                     li.dropdown-item
-                      a(href='/users') User Managment
+                      a(href='/users') User Management
                   li.divider.dropdown-item
                   li.dropdown-item
                     a(href='/logout') Logout
@@ -90,17 +78,32 @@
             li.nav-item(class=(title === 'Home') ? 'active' : undefined)
               a.nav-link(href='/') Home
             if user
-              li.nav-item(class=(title === 'My Devices') ? 'active' : undefined)
-                a.nav-link(href='/devices/'+user.id) My Devices
-              li.nav-item(class=(title === 'All Devices') ? 'active' : undefined)
-                a.nav-link(href='/devices') All Devices
-              li.nav-item(class=(title === 'Request Deployment') ? 'active' : undefined)
-                a.nav-link(href='/devicerequest') Request Deployment
-              if user.profile.role == '0' || user.profile.role == '2'
-                li.nav-item(class=(title === 'Manage Requests') ? 'active' : undefined)
-                  a.nav-link(href='/devicerequest') Manage Requests
-                li.nav-item(class=(title === 'Provision Device') ? 'active' : undefined)
-                  a.nav-link(href='/devices/add') Provision Device
+              li.nav-item.dropdown.hoverdrop
+                a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                  | Implants
+                .dropdown-menu(aria-labelledby='navbarDropdown')
+                  a.dropdown-item(href='/implants/'+user.id) My Implants
+                  a.dropdown-item(href='/implants') All Implants
+                  a.dropdown-item(href='/deployImplant') Request Deployment
+                  if user.profile.role == '0' || user.profile.role == '2'
+                    .dropdown-divider
+                    a.dropdown-item(href='/implantrequest') Manage Requests
+              li.nav-item.dropdown.hoverdrop
+                a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                  | Attack Infrastructure
+                .dropdown-menu(aria-labelledby='navbarDropdown')
+                  a.dropdown-item(href='/infrastructure/'+user.id) My Infrastructure
+                  a.dropdown-item(href='/infrastructure') All Infrastructure
+                  a.dropdown-item(href='/deployInfrastructure') Create Infrastructure
+              li.nav-item.dropdown.hoverdrop
+                a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                  | Tools
+                .dropdown-menu(aria-labelledby='navbarDropdown')
+                  a.dropdown-item(href='https://gophish.a-lignpt.com:3333') Phishing
+                  a.dropdown-item(href='https://dev.hackharder.net') Development
+                  a.dropdown-item(href='https://github.com/SerpicoProject/Serpico') Reporting
+                  a.dropdown-item(href='https://dev.hackharder.net/zach/Super-Tasty-Wiki/wiki/_pages') Wiki
+                  a.dropdown-item(href='https://pass.hackharder.net') Passwords                  
           ul.nav.navbar-nav.ml-auto
             if !user
               li.nav-item(class=(title === 'Login') ? 'active' : undefined)
@@ -117,7 +120,7 @@
                     a(href='/account') My Account
                   if user.profile.role == '0'
                     li.dropdown-item
-                      a(href='/users') User Managment
+                      a(href='/users') User Management
                   li.divider.dropdown-item
                   li.dropdown-item
                     a(href='/logout') Logout

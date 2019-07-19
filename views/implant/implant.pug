@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+  h1=implant.name
+  p.lead #{implant.client} - #{implant.consultant}
+  hr
+  .row
+    .col-md-2
+    .col-md-8
+      ul.list-group
+        li.list-group-item Id: #{implant._id}
+        li.list-group-item State: #{implant.status.state}
+        li.list-group-item Ship Date: #{implant.status.shipDate}
+        li.list-group-item Return Date: #{implant.status.returnDate}
+        li.list-group-item Online: #{implant.status.online}
+        li.list-group-item Public IP: #{implant.status.publicIP}
+        li.list-group-item Model: #{implant.model}
+        li.list-group-item Location: #{implant.location}
+        li.list-group-item Name: #{implant.pointOfContact.name}
+        li.list-group-item Number: #{implant.pointOfContact.number}
+        li.list-group-item Email: #{implant.pointOfContact.email}
+        li.list-group-item Consultant: #{implant.consultant}
+        li.list-group-item Internal IP: #{implant.networkConfig.internalIP}
+        li.list-group-item Subnet: #{implant.networkConfig.subnet}
+        li.list-group-item Gateway: #{implant.networkConfig.gateway}
+        li.list-group-item DNS 1: #{implant.networkConfig.dns1}
+        li.list-group-item DNS 2: #{implant.networkConfig.dns2}
+        li.list-group-item Notes: #{implant.notes}

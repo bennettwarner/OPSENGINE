@@ -12447,7 +12447,8 @@ footer {
   width: 100%;
   height: 45px;
   line-height: 45px; }
-  footer p, footer ul {
+  footer p,
+  footer ul {
     margin-bottom: 0; }
 
 textarea {
@@ -12534,3 +12535,6 @@ textarea {
   color: #000 !important; }
   .btn-snapchat:hover, .btn-snapchat:active {
     background-color: #f1ef00; }
+
+li.hoverdrop:hover > .dropdown-menu {
+  display: block; }

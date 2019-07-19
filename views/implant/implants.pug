@@ -1,0 +1,44 @@
+extends ../layout
+
+block content
+    h1=title
+    br
+    table.table.table-hover#implantTable
+        thead
+            tr
+                th(scope='col') Name
+                th(scope='col') Status
+                th(scope='col') Client
+                th(scope='col') Location
+                th(scope='col') Consultant
+                th(scope='col')
+        tbody
+            each implant, i in implants
+                tr
+                    td
+                        h6
+                            a(href="/implant/"+implant._id)=implant.name
+                    td 
+                        h5
+                            if implant.status.online=='0'
+                                span.badge.badge-danger Offline
+                            else
+                                span.badge.badge-success Online
+                    td
+                        h6=implant.client
+                    td
+                        h6=implant.location
+                    td
+                        h6=implant.consultant
+                    td
+                        .dropdown
+                            a#dropdownMenuLink.btn.btn-secondary.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                | Access 
+                            .dropdown-menu(aria-labelledby='dropdownMenuLink')
+                                a.dropdown-item(href="/shell/"+implant._id) Launch Shell
+                                a.dropdown-item(href='#') Connect Via SSH
+                                a.dropdown-item(href='#') Connect Via RDP
+                                a.dropdown-item(href='#') Manage Files
+                                .dropdown-divider
+                                a.dropdown-item(href='#') Edit
+                                a.dropdown-item(href='#') Delete

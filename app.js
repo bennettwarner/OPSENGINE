@@ -32,7 +32,7 @@ dotenv.config({ path: ".env" });
 const homeController = require("./controllers/home");
 const userController = require("./controllers/user");
 const apiController = require("./controllers/api");
-const deviceController = require("./controllers/devices");
+const implantController = require("./controllers/implants");
 const cloudController = require("./controllers/cloud");
 
 /**
@@ -215,35 +215,34 @@ app.post(
 );
 app.get("/retro", passportConfig.isAuthenticated, userController.retro);
 app.get(
-  "/devices",
+  "/implants",
   passportConfig.isAuthenticated,
-  deviceController.getDevices
+  implantController.getImplants
 );
 app.get(
-  "/devices/:user",
+  "/implants/:user",
   passportConfig.isAuthenticated,
-  deviceController.userDevices
+  implantController.userImplants
 );
 app.get(
-  "/device/:id",
+  "/implant/add/",
   passportConfig.isAuthenticated,
-  deviceController.getDevice
+  implantController.addImplant
+);
+app.get(
+  "/implant/:id",
+  passportConfig.isAuthenticated,
+  implantController.getImplant
 );
 app.post(
-  "/device/:id",
+  "/implant/:id",
   passportConfig.isAuthenticated,
-  deviceController.postDevice
+  implantController.postImplant
 );
-app.get(
-  "/device/add/",
-  passportConfig.isAuthenticated,
-  deviceController.addDevice
-);
-//app.post('/device/add', passportConfig.isAuthenticated, deviceController.addDevice);
 app.get(
   "/shell/:id",
   passportConfig.isAuthenticated,
-  deviceController.getShell
+  implantController.getShell
 );
 app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
 app.post(
@@ -261,6 +260,25 @@ app.post(
   passportConfig.isAuthenticated,
   userController.postDeleteAccount
 );
+
+app.get(
+  "/infrastructure",
+  passportConfig.isAuthenticated,
+  cloudController.getInfrastructure
+);
+
+app.get(
+  "/deployInfrastructure",
+  passportConfig.isAuthenticated,
+  cloudController.getdeployInfrastructure
+);
+
+// app.post(
+//   "/deployInfrastructure",
+//   passportConfig.isAuthenticated,
+//   cloudController.postdeployInfrastructure
+// );
+
 app.get(
   "/getImages",
   passportConfig.isAuthenticated,
@@ -305,6 +323,9 @@ if (process.env.NODE_ENV === "development") {
     res.status(500).send("Server Error");
   });
 }
+app.get("*", function(req, res) {
+  res.send("what???", 404);
+});
 
 /**
  * Start Express server.
