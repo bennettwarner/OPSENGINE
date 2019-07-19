@@ -1,8 +1,8 @@
 .navbar.navbar-light.fixed-top.navbar-expand-lg
   .container
     a.navbar-brand(href='/')
-      i.fas.fa-mountain
-      | SPIKE
+      i.fas.fa-terminal
+      | OPSENGINE
     if !user
       button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
         span.sr-only Toggle navigation
@@ -39,7 +39,7 @@
                 .dropdown-menu(aria-labelledby='navbarDropdown')
                   a.dropdown-item(href='/infrastructure/'+user.id) My Infrastructure
                   a.dropdown-item(href='/infrastructure') All Infrastructure
-                  a.dropdown-item(href='/deployInfrastructure') Create Infrastructure
+                  a.dropdown-item(href='/deployInfrastructure') Deploy Infrastructure
               li.nav-item.dropdown.hoverdrop
                 a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                   | Tools
@@ -94,7 +94,7 @@
                 .dropdown-menu(aria-labelledby='navbarDropdown')
                   a.dropdown-item(href='/infrastructure/'+user.id) My Infrastructure
                   a.dropdown-item(href='/infrastructure') All Infrastructure
-                  a.dropdown-item(href='/deployInfrastructure') Create Infrastructure
+                  a.dropdown-item(href='/deployInfrastructure') Deploy Infrastructure
               li.nav-item.dropdown.hoverdrop
                 a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                   | Tools

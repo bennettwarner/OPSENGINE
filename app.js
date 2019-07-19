@@ -273,11 +273,13 @@ app.get(
   cloudController.getdeployInfrastructure
 );
 
-// app.post(
-//   "/deployInfrastructure",
-//   passportConfig.isAuthenticated,
-//   cloudController.postdeployInfrastructure
-// );
+app.get("/rdpgen/:id", passportConfig.isAuthenticated, cloudController.rdpgen);
+
+app.post(
+  "/deployInfrastructure",
+  passportConfig.isAuthenticated,
+  cloudController.postdeployInfrastructure
+);
 
 app.get(
   "/getImages",

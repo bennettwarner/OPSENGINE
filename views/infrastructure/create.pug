@@ -5,24 +5,26 @@ block content
 	hr
 	br
 	form(action='/deployInfrastructure', method='POST')
-	input(type='hidden', name='_csrf', value=_csrf)
-	.form-group.row
-		label.col-md-3.col-form-label.font-weight-bold.text-right(for='name') Server Name
-		.col-md-7
-			input.form-control(type='text', name='name', id='name', placeholder='align-pentest', autocomplete='name')
-	.form-group.row
-		label.col-md-3.col-form-label.font-weight-bold.text-right(for='image') Image
-		.col-md-7
-			select.form-control(type='text', name='image', id='image', value='image', autocomplete)
-				each image, i in images
-					option=image.name
-	.form-group.row
-		label.col-md-3.col-form-label.font-weight-bold.text-right(for='location') Location
-		.col-md-7
-			select.form-control(type='location', name='location', id='location', value='location', autocomplete)
-					option New York
-	.form-group
-		.offset-sm-3.col-md-7.pl-2
-			button.btn.btn.btn-primary(type='submit')
-				i.fas.fa-plus.fa-sm
-				| Create Server
+		input(type='hidden', name='_csrf', value=_csrf)
+		.form-group.row
+			label.col-md-3.col-form-label.font-weight-bold.text-right(for='name') Server Name
+			.col-md-7
+				input.form-control(type='text', name='name', id='name', required, placeholder='align-pentest', autocomplete='name')
+		.form-group.row
+			label.col-md-3.col-form-label.font-weight-bold.text-right(for='image') Image
+			.col-md-7
+				select.form-control(type='text', name='image', id='image', value='image', autocomplete)
+					each image, i in images
+						option(value=image.id)=image.name
+		.form-group.row
+			label.col-md-3.col-form-label.font-weight-bold.text-right(for='location') Location
+			.col-md-7
+				select.form-control(type='location', name='location', id='location', value='location', autocomplete)
+						option(value='nyc1') New York
+		.form-group
+			.offset-sm-3.col-md-7.pl-2
+				button#loader.btn.btn.btn-primary(type='submit')
+					i.fas.fa-plus.fa-sm
+					| Deploy Server
+block scripts
+	script $("#loader").click(function(){$("#loader").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Deploying...');}); 

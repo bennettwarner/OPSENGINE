@@ -8,6 +8,8 @@ var config = {
   }
 };
 
+var generator = require("generate-password");
+
 //////////////////////////////////////////////////////////////
 
 exports.getImages = (req, res, next) => {
@@ -118,4 +120,63 @@ exports.getdeployInfrastructure = (req, res, next) => {
     .catch(error => {
       console.log(error);
     });
+};
+
+exports.postdeployInfrastructure = (req, res, next) => {
+  var password = generator.generate({
+    length: 16,
+    numbers: true
+  });
+  name = req.body.name.replace(/\W/g, "");
+  api
+    .post(
+      "droplets",
+      {
+        name: name,
+        region: req.body.location,
+        size: "s-1vcpu-2gb",
+        image: req.body.image,
+        backups: false,
+        ipv6: false,
+        user_data:
+          `#!/bin/bash
+        sudo echo -e "` +
+          password +
+          "\n" +
+          password +
+          `" | passwd root`,
+        private_networking: null,
+        volumes: null,
+        tags: [process.env.DO_SERVERTAG]
+      },
+      config
+    )
+    .then(response => {
+      server_id = response.data.droplet.id;
+      setTimeout(function() {
+        api
+          .get("droplets/" + server_id, config)
+          .then(response2 => {
+            console.log(response2.data.droplet);
+            res.render("infrastructure/createSuccess", {
+              title: "Deploy Infrastructure",
+              name: name,
+              password: password,
+              ip: response2.data.droplet.networks.v4
+            });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }, 5000);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+exports.rdpgen = (req, res, next) => {
+  ip = req.params.id;
+  res.set("Content-Disposition", "attachment;filename=server.rdp");
+  res.send("full address:s:" + ip + ":1337");
 };

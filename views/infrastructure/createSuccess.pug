@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+	h3 Deploy Infrastructure
+	hr
+	br
+	h2
+		b #{name} successfully created!
+	h4 Please log in over SSH or RDP with the following credentials:
+	hr
+	code
+		| IP Address: #{ip[0].ip_address}
+		br
+		| Username: root
+		br
+		| Password: #{password}
+	br
+	br
+	a.btn.btn-light(href='/rdpgen/'+ip[0].ip_address, role='button') Download RDP Config
+	br
+	hr
+	br
+	a.btn.btn-primary(href='/infrastructure', role='button') Back
