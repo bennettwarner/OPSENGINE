@@ -27,6 +27,18 @@ exports.getImages = (req, res, next) => {
     });
 };
 
+exports.getServers = (req, res, next) => {
+  api
+    .get("droplets?tag_name=" + process.env.DO_SERVERTAG, config)
+    .then(response => {
+      console.log(response.data);
+      res.send(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 exports.createServer = (req, res, next) => {
   api
     .post(
@@ -42,7 +54,7 @@ exports.createServer = (req, res, next) => {
 		sudo echo -e "linuxpassword\nlinuxpassword" | passwd root`,
         private_networking: null,
         volumes: null,
-        tags: ["deploy"]
+        tags: [process.env.DO_SERVERTAG]
       },
       config
     )

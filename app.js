@@ -268,6 +268,12 @@ app.get(
 );
 
 app.get(
+  "/getServers",
+  passportConfig.isAuthenticated,
+  cloudController.getServers
+);
+
+app.get(
   "/createServer",
   passportConfig.isAuthenticated,
   cloudController.createServer
