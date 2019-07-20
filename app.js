@@ -300,7 +300,7 @@ app.get(
 );
 
 app.get(
-  "/deleteServer",
+  "/deleteServer/:id",
   passportConfig.isAuthenticated,
   cloudController.deleteServer
 );

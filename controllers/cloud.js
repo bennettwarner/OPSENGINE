@@ -71,18 +71,6 @@ exports.createServer = (req, res, next) => {
     });
 };
 
-exports.deleteServer = (req, res, next) => {
-  api
-    .delete("droplets/" + "151513285", config)
-    .then(response => {
-      console.log(response.data);
-      res.send(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
-
 //////////////////////////////////////////////////////////////
 
 exports.getInfrastructure = (req, res, next) => {
@@ -123,10 +111,12 @@ exports.getdeployInfrastructure = (req, res, next) => {
 };
 
 exports.postdeployInfrastructure = (req, res, next) => {
-  var password = generator.generate({
-    length: 16,
-    numbers: true
-  });
+  var password =
+    "align" +
+    generator.generate({
+      length: 8,
+      numbers: true
+    });
   name = req.body.name.replace(/\W/g, "");
   api
     .post(
@@ -179,4 +169,16 @@ exports.rdpgen = (req, res, next) => {
   ip = req.params.id;
   res.set("Content-Disposition", "attachment;filename=server.rdp");
   res.send("full address:s:" + ip + ":1337");
+};
+
+exports.deleteServer = (req, res, next) => {
+  api
+    .delete("droplets/" + req.params.id, config)
+    .then(response => {
+      console.log(response.data);
+      res.redirect("/infrastructure");
+    })
+    .catch(error => {
+      console.log(error);
+    });
 };

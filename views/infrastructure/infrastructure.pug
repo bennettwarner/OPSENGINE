@@ -31,10 +31,35 @@ block content
                             a#dropdownMenuLink.btn.btn-secondary.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                                 | Access 
                             .dropdown-menu(aria-labelledby='dropdownMenuLink')
-                                a.dropdown-item(href="/shell/1") Launch Shell
+                                a.dropdown-item(href="/shell/"+server.id) Launch Shell
                                 a.dropdown-item(href='#') Connect Via SSH
-                                a.dropdown-item(href='#') Connect Via RDP
+                                a.dropdown-item(href='/rdpgen/'+server.networks.v4[0].ip_address) Connect Via RDP
                                 a.dropdown-item(href='#') Manage Files
                                 .dropdown-divider
-                                a.dropdown-item(href='#') Edit
-                                a.dropdown-item(href='#') Delete
+                                a.dropdown-item(data-toggle='modal', href='#deleteModal'+i) Delete
+                div(id='deleteModal'+i).modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                    .modal-dialog(role='document')
+                        .modal-content
+                            .modal-header
+                                h5.modal-title Delete #{server.name}
+                                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                span(aria-hidden='true') ×
+                            .modal-body
+                                |Are you sure you want to delete #{server.name}?
+                                br
+                                b(style='color:red') This action is permanent and irreversible. Data loss will occur!
+                                br
+                                |If you are sure you want to proceed with the deletion enter 
+                                b DELETE
+                                |  into the textbox below and then click the delete button.
+                                br
+                                input.deletePrompt(type='text')
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                                button.btn.btn-danger.deleteButton(type='button', disabled='disabled', onclick="window.location.href = '/deleteServer/"+server.id+"';") Delete
+block scripts
+    script
+        |$(document).ready(function () {
+        |$(".deletePrompt").keyup(function (data) {
+        |if ($(this).val() == "DELETE") {$(".deleteButton").removeAttr("disabled");}
+        |else {$(".deleteButton").attr("disabled", "disabled");}});});
