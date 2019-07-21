@@ -282,24 +282,6 @@ app.post(
 );
 
 app.get(
-  "/getImages",
-  passportConfig.isAuthenticated,
-  cloudController.getImages
-);
-
-app.get(
-  "/getServers",
-  passportConfig.isAuthenticated,
-  cloudController.getServers
-);
-
-app.get(
-  "/createServer",
-  passportConfig.isAuthenticated,
-  cloudController.createServer
-);
-
-app.get(
   "/deleteServer/:id",
   passportConfig.isAuthenticated,
   cloudController.deleteServer
