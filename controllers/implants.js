@@ -45,15 +45,6 @@ exports.getImplant = (req, res, next) => {
 exports.postImplant = (req, res) => {};
 
 /**
- * GET /shell/:id
- */
-exports.getShell = (req, res) => {
-  res.render("implant/shell", {
-    title: "Shell"
-  });
-};
-
-/**
  * POST /implants/add
  * Create a new local account.
  */

@@ -1,5 +1,9 @@
 const User = require("../models/User");
+const Server = require("../models/Server");
 
+const fs = require("fs");
+const scp = require("scp2");
+const Client = require("ssh2").Client;
 const axios = require("axios");
 const api = axios.create({ baseURL: "https://api.digitalocean.com/v2/" });
 api_key = process.env.DO_APIKEY;
@@ -13,20 +17,23 @@ var config = {
 var generator = require("generate-password");
 
 exports.getInfrastructure = (req, res, next) => {
-  User.find({}, (err, users) => {
-    api
-      .get("droplets?tag_name=" + process.env.DO_SERVERTAG, config)
-      .then(response => {
-        console.log(response.data.droplets);
-        res.render("infrastructure/infrastructure", {
-          title: "Infrastructure",
-          infrastructure: response.data.droplets,
-          users: users
+  Server.find({}, (err, servers) => {
+    User.find({}, (err, users) => {
+      api
+        .get("droplets?tag_name=" + process.env.DO_SERVERTAG, config)
+        .then(response => {
+          console.log(response.data.droplets);
+          res.render("infrastructure/infrastructure", {
+            title: "Infrastructure",
+            infrastructure: response.data.droplets,
+            users: users,
+            servers: servers
+          });
+        })
+        .catch(error => {
+          console.log(error);
         });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    });
   });
 };
 
@@ -89,12 +96,22 @@ exports.postdeployInfrastructure = (req, res, next) => {
         api
           .get("droplets/" + server_id, config)
           .then(response2 => {
-            console.log(response2.data.droplet);
-            res.render("infrastructure/createSuccess", {
-              title: "Deploy Infrastructure",
+            const server = new Server({
+              id: response2.data.droplet.id,
+              ip: response2.data.droplet.networks.v4[0].ip_address,
               name: name,
-              password: password,
-              ip: response2.data.droplet.networks.v4
+              consultant: req.user._id,
+              creds: password
+            });
+            server.save(err => {
+              console.log(response2.data.droplet);
+              res.render("infrastructure/createSuccess", {
+                title: "Deploy Infrastructure",
+                name: name,
+                password: password,
+                ip: response2.data.droplet.networks.v4,
+                id: response2.data.droplet.id
+              });
             });
           })
           .catch(error => {
@@ -117,10 +134,123 @@ exports.deleteServer = (req, res, next) => {
   api
     .delete("droplets/" + req.params.id, config)
     .then(response => {
-      console.log(response.data);
-      res.redirect("/infrastructure");
+      Server.remove({ id: req.params.id }, (err, user) => {
+        if (err) {
+          return next(err);
+        }
+        console.log(response.data);
+        res.redirect("/infrastructure");
+      });
     })
     .catch(error => {
       console.log(error);
     });
+};
+
+/**
+ * GET /shell/:id
+ */
+exports.getShell = (req, res) => {
+  Server.findOne({ id: req.params.id }, (err, server) => {
+    if (err) {
+      return next(err);
+    }
+    console.log(server);
+    res.render("infrastructure/shell", {
+      title: "Shell",
+      server: server,
+      sshtun: process.env.SSHTUN_BASEURL
+    });
+  });
+};
+
+/**
+ * GET /files/:id
+ */
+exports.getFiles = (req, res) => {
+  Server.findOne({ id: req.params.id }, (err, server) => {
+    if (err) {
+      return next(err);
+    }
+    console.log(server);
+    var conn = new Client();
+    conn
+      .on("ready", function() {
+        conn.sftp(function(err, sftp) {
+          if (err) throw err;
+          sftp.readdir("/root/", function(err, list) {
+            if (err) throw err;
+            res.render("infrastructure/files", {
+              title: "Files",
+              server: server,
+              dir: list
+            });
+            conn.end();
+          });
+        });
+      })
+      .connect({
+        host: server.ip,
+        port: 22,
+        username: "root",
+        password: server.creds
+      });
+  });
+};
+
+exports.dlFile = (req, res) => {
+  Server.findOne({ id: req.params.id }, (err, server) => {
+    if (err) {
+      return next(err);
+    }
+    scp.scp(
+      {
+        host: server.ip,
+        username: "root",
+        password: server.creds,
+        path: "/root/" + req.query.file
+      },
+      "./tmp/" + req.query.file,
+      function(err) {
+        res.set("Content-Disposition", "attachment;filename=" + req.query.file);
+        res.sendFile(
+          __dirname.substr(0, __dirname.length - 12) + "/tmp/" + req.query.file
+        );
+        setTimeout(function() {
+          fs.unlink("./tmp/" + req.query.file, function(err) {
+            if (err) throw err;
+            // if no error, file has been deleted successfully
+            console.log("File deleted!");
+          });
+        }, 60000);
+      }
+    );
+    console.log(server);
+  });
+};
+
+/**
+ * POST /serverMetadata/:id
+ * Update profile information.
+ */
+exports.postMetadata = (req, res, next) => {
+  Server.findOne({ id: req.params.id }, (err, server) => {
+    if (err) {
+      return next(err);
+    }
+    console.dir(req.body);
+    server.consultant = req.body.consultant || "";
+    server.client = req.body.client || "";
+    // server.project.start = new Date(req.body.start).toUTCString() || "";
+    //server.project.end = new Date(req.body.end).toUTCString() || "";
+    server.notes = req.body.notes || "";
+
+    server.save(err => {
+      if (err) {
+        return next(err);
+      }
+      req.flash("success", { msg: "Server metadata has been updated." });
+      res.redirect("/infrastructure");
+    });
+  });
 };

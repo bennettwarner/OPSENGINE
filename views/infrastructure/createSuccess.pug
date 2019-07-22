@@ -8,16 +8,40 @@ block content
 		b #{name} successfully created!
 	h4 Please log in over SSH or RDP with the following credentials:
 	hr
+	i The server will be accessible within 1-3 minutes.
+	br
 	code
-		| IP Address: #{ip[0].ip_address}
+		| IP Address: 
+		span(id='ip')=ip[0].ip_address
 		br
 		| Username: root
 		br
-		| Password: #{password}
+		| Password: 
+		span(id='password')=password
 	br
 	br
+	a.btn.btn-light(href='/shell/'+id, role='button') Launch Shell
+	| &nbsp;
 	a.btn.btn-light(href='/rdpgen/'+ip[0].ip_address, role='button') Download RDP Config
 	br
 	hr
 	br
 	a.btn.btn-primary(href='/infrastructure', role='button') Back
+	div(aria-live='polite', aria-atomic='true', style='position: relative; min-height: 200px;')
+		.toast(style='position: absolute; top: 10%; right:2%;', data-delay="1000")
+			.toast-header
+				strong.mr-auto Copied to clipboard
+
+block scripts
+	script
+		|document.getElementById("ip").addEventListener("click", function(){
+		|var copyText = document.getElementById("ip");
+		|console.log(copyText.innerHTML)
+		|navigator.clipboard.writeText(copyText.innerHTML).then(function() {}, function(err) {console.error('Async: Could not copy text: ', err);});            
+		|$('.toast').toast('show');});
+		|document.getElementById("password").addEventListener("click", function(){
+		|var copyText = document.getElementById("password");
+		|console.log(copyText.innerHTML)
+		|navigator.clipboard.writeText(copyText.innerHTML).then(function() {}, function(err) {console.error('Async: Could not copy text: ', err);});            
+		|$('.toast').toast('show');});
+

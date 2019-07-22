@@ -5,5 +5,13 @@ $(document).ready(() => {
       autoWidth: true,
       columns: [null, null, null, null, null, { orderable: false }]
     });
+    $("#infrastructureTable").DataTable({
+      autoWidth: true,
+      columns: [null, null, null, null, { orderable: false }]
+    });
+    $("#fileTable").DataTable({
+      autoWidth: true,
+      columns: [null, { orderable: false }]
+    });
   });
 });

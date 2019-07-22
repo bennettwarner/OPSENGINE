@@ -1,6 +1,7 @@
 /**
  * Module dependencies.
  */
+const fs = require("fs");
 const express = require("express");
 const compression = require("compression");
 const session = require("express-session");
@@ -20,6 +21,12 @@ const sass = require("node-sass-middleware");
 const multer = require("multer");
 
 const upload = multer({ dest: path.join(__dirname, "uploads") });
+
+var dir = "./tmp";
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir);
+}
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -149,6 +156,13 @@ app.use(
   })
 );
 app.use(
+  "/",
+  express.static(path.join(__dirname, "node_modules/gijgo"), {
+    maxAge: 31557600000
+  })
+);
+
+app.use(
   "/js/lib",
   express.static(path.join(__dirname, "node_modules/datatables/media/js"), {
     maxAge: 31557600000
@@ -239,11 +253,12 @@ app.post(
   passportConfig.isAuthenticated,
   implantController.postImplant
 );
-app.get(
-  "/shell/:id",
-  passportConfig.isAuthenticated,
-  implantController.getShell
-);
+app.get("/shell/:id", passportConfig.isAuthenticated, cloudController.getShell);
+
+app.get("/files/:id", passportConfig.isAuthenticated, cloudController.getFiles);
+
+app.get("/getFile/:id", passportConfig.isAuthenticated, cloudController.dlFile);
+
 app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
 app.post(
   "/account/profile",
@@ -287,6 +302,12 @@ app.get(
   cloudController.deleteServer
 );
 
+app.post(
+  "/serverMetadata/:id",
+  passportConfig.isAuthenticated,
+  cloudController.postMetadata
+);
+
 /**
  * API examples routes.
  */
@@ -307,8 +328,15 @@ if (process.env.NODE_ENV === "development") {
     res.status(500).send("Server Error");
   });
 }
-app.get("*", function(req, res) {
-  res.send("what???", 404);
+
+// express error handling
+app.use(function(req, res, next) {
+  res.status(404).send("Sorry can't find that!");
+});
+
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 /**

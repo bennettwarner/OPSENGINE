@@ -18,7 +18,9 @@ html
       else if user.theme == 'dark'
         link(rel='stylesheet', href='/css/main_dark.css')
       else
-        link(rel='stylesheet', href='/css/main.css')      
+        link(rel='stylesheet', href='/css/main.css')     
+    link(href='/css/gijgo.min.css', rel='stylesheet', type='text/css')
+ 
 
     block head
 
@@ -37,4 +39,6 @@ html
     script(src='/js/lib/jquery.dataTables.min.js')
     script(src='/js/lib/bootstrap4-toggle.min.js')
     script(src='/js/main.js')
+    script(src='/js/gijgo.min.js', type='text/javascript')
+
     block scripts

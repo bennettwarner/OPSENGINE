@@ -1,0 +1,39 @@
+extends ../layout
+
+block content
+    h1 #{server.name || server.ip} - Files
+    i Please download larger files using other tools like SCP
+    br
+    br
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item.active(aria-current='page') Viewing: /loot
+    .container
+        .row
+            .col-md-1
+            .col-md-10
+                table.table.table-hover#fileTable
+                    thead
+                        tr
+                            th(scope='col') Filename
+                            th(scope='col') Size
+                    tbody
+                        each file, f in dir
+                            - sizekb = file.attrs["size"] / 1024
+                            - sizemb = file.attrs["size"] / 1024 / 1024
+                            - sizegb = file.attrs["size"] / 1024 / 1024 / 1024
+                            if sizegb >= 1.0
+                                - finalsize=Math.round(sizegb)+ ' GB'
+                            else if sizemb >= 1.0
+                                - finalsize=Math.round(sizemb)+ ' MB'
+                            else if sizekb >= 1.0
+                                - finalsize=Math.round(sizekb) + ' KB'
+                            else
+                                - finalsize='< 1 KB'
+                            tr
+                                td
+                                    h5
+                                        i.fas.fa-file
+                                        a(href='/getFile/'+server.id+'?file='+file.filename)=file.filename
+                                td
+                                    h5=finalsize
