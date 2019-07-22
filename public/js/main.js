@@ -7,7 +7,7 @@ $(document).ready(() => {
     });
     $("#infrastructureTable").DataTable({
       autoWidth: true,
-      columns: [null, null, null, null, { orderable: false }]
+      columns: [null, null, null, null, null, { orderable: false }]
     });
     $("#fileTable").DataTable({
       autoWidth: true,
