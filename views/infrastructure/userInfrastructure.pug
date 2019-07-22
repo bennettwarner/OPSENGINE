@@ -1,0 +1,190 @@
+extends ../layout
+
+block content
+    h1=title
+    br
+    table.table.table-hover.stripe#infrastructureTable
+        thead
+            tr
+                th(scope='col') Name
+                th(scope='col') IP Address
+                th(scope='col') Consultant
+                th(scope='col') Client
+                th(scope='col') Location
+                th(scope='col')
+        tbody
+            each server, i in infrastructure
+                - client = ''
+                - consultant = ''
+                - consultant_id = ''
+                - creds = ''
+                - notes = ''
+                each record, r in servers
+                    if record.id == server.id
+                        - client = record.client
+                        - consultant = record.consultant
+                        - consultant_id = record.consultant
+                        - creds = record.creds
+                        - notes = record.notes
+                each user, u in users
+                    if user._id == consultant
+                        - consultant = user.profile.name || user.email            
+                if user._id == consultant_id
+                    tr
+                        td
+                            h6
+                                a(href="#/infrastructure/"+server.id)=server.name
+                        td 
+                            h6
+                                span(id='ip'+i)=server.networks.v4[0].ip_address
+                        td
+                            h6=consultant
+                        td
+                            h6=client
+                        td
+                            h6=server.region.name.substr(0,server.region.name.length-2)
+                        td
+                            .dropdown
+                                a#dropdownMenuLink.btn.btn-secondary.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                    | Access 
+                                .dropdown-menu(aria-labelledby='dropdownMenuLink')
+                                    a.dropdown-item(href="/shell/"+server.id) Launch Shell
+                                    a.dropdown-item(data-toggle='modal', href='#credsModal'+i) Get Credentials
+                                    a.dropdown-item(data-toggle='modal', href='#sshModal'+i) Connect Via SSH
+                                    a.dropdown-item(href='/rdpgen/'+server.networks.v4[0].ip_address) Connect Via RDP
+                                    a.dropdown-item(href="/files/"+server.id) Manage Files
+                                    .dropdown-divider
+                                    a.dropdown-item(data-toggle='modal', href='#editModal'+i) Edit Metadata
+                                    a.dropdown-item(data-toggle='modal', href='#deleteModal'+i) Delete
+                    div.modal.fade(id='credsModal'+i, tabindex='-1', role='dialog', aria-hidden='true')
+                        .modal-dialog(role='document')
+                            .modal-content
+                                .modal-header
+                                    h5.modal-title #{server.name} Credentials
+                                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                    span(aria-hidden='true') ×
+                                .modal-body
+                                    |The recorded credentials for #{server.name} are:
+                                    br
+                                    br
+                                    code
+                                        | Username: root
+                                        br
+                                        | Password: 
+                                        span(id='password'+i)=creds
+                                    br
+                                    br
+                                .modal-footer
+                                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    div.modal.fade(id='sshModal'+i, tabindex='-1', role='dialog', aria-hidden='true')
+                        .modal-dialog(role='document')
+                            .modal-content
+                                .modal-header
+                                    h5.modal-title SSH connection info for #{server.name}
+                                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                    span(aria-hidden='true') ×
+                                .modal-body
+                                    |Connect to #{server.name} via SSH using the following command:
+                                    br
+                                    br
+                                    code
+                                        span(id='ssh'+i)='ssh root@'+server.networks.v4[0].ip_address
+                                    br
+                                    br
+                                    | accept and certificates and when prompted enter the password:
+                                    br
+                                    br
+                                    code
+                                        span(id='password'+i)=creds
+                                    br
+                                .modal-footer
+                                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                    div.modal.fade(id='deleteModal'+i, tabindex='-1', role='dialog', aria-hidden='true')
+                        .modal-dialog(role='document')
+                            .modal-content
+                                .modal-header
+                                    h5.modal-title Delete #{server.name}
+                                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                    span(aria-hidden='true') ×
+                                .modal-body
+                                    |Are you sure you want to delete #{server.name}?
+                                    br
+                                    b(style='color:red') This action is permanent and irreversible. Data loss will occur!
+                                    br
+                                    |If you are sure you want to proceed with the deletion enter 
+                                    b DELETE
+                                    |  into the textbox below and then click the delete button.
+                                    br
+                                    input.deletePrompt(type='text')
+                                .modal-footer
+                                    button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                                    button.btn.btn-danger.deleteButton(type='button', disabled='disabled', onclick="window.location.href = '/deleteServer/"+server.id+"';") Delete
+                    div.modal.fade(id='editModal'+i, tabindex='-1', role='dialog', aria-hidden='true')
+                        form(action='/serverMetadata/'+server.id, method='POST')
+                            .modal-dialog(role='document')
+                                .modal-content
+                                    .modal-header
+                                        h5.modal-title Edit #{server.name}
+                                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                        span(aria-hidden='true') ×
+                                    .modal-body
+                                            input(type='hidden', name='_csrf', value=_csrf)
+                                            .form-group.row
+                                                label.col-md-3.col-form-label.font-weight-bold.text-right(for='client') Client
+                                                .col-md-7
+                                                    input.form-control(type='text', name='client', id='client', value=client, placeholder='A-LIGN', autocomplete='client')
+                                            .form-group.row
+                                                label.col-md-3.col-form-label.font-weight-bold.text-right(for='consultant') Consultant
+                                                .col-md-7
+                                                    select.form-control(type='text', name='consultant', id='consultant', autocomplete)
+                                                        option(value=consultant_id)=consultant
+                                                        each user, u in users
+                                                            if user._id != consultant_id
+                                                                option(value=user._id)=user.profile.name || user.email
+                                            .form-group.row
+                                                label.col-md-3.col-form-label.font-weight-bold.text-right(for='start') Start Date
+                                                .col-md-7
+                                                    input.form-control(type='text', name='start', id='start')
+                                            .form-group.row
+                                                label.col-md-3.col-form-label.font-weight-bold.text-right(for='end') End Date
+                                                .col-md-7
+                                                    input.form-control(type='text', name='end', id='end')
+                                            .form-group.row
+                                                label.col-md-3.col-form-label.font-weight-bold.text-right(for='notes') Notes
+                                                .col-md-7
+                                                    textarea.form-control(rows='3', name='notes', id='notes',value=notes, autocomplete='notes')
+                                    .modal-footer
+                                        button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                                        button.btn.btn-success(type='submit') Save
+    div(aria-live='polite', aria-atomic='true', style='position: relative; min-height: 200px;')
+        .toast(style='position: absolute; top: 90%; right:2%;', data-delay="1000")
+            .toast-header
+                strong.mr-auto Copied to clipboard
+
+block scripts
+    script
+        |$(document).ready(function () {
+        |$(".deletePrompt").keyup(function (data) {
+        |if ($(this).val() == "DELETE") {$(".deleteButton").removeAttr("disabled");}
+        |else {$(".deleteButton").attr("disabled", "disabled");}});});
+    each server, i in infrastructure
+        script
+            |document.getElementById("ip#{i}").addEventListener("click", function(){
+            |var copyText = document.getElementById("ip#{i}");
+            |console.log(copyText.innerHTML)
+            |navigator.clipboard.writeText(copyText.innerHTML).then(function() {}, function(err) {console.error('Async: Could not copy text: ', err);});            
+            |$('.toast').toast('show');});
+            |document.getElementById("password#{i}").addEventListener("click", function(){
+            |var copyText = document.getElementById("password#{i}");
+            |console.log(copyText.innerHTML)
+            |navigator.clipboard.writeText(copyText.innerHTML).then(function() {}, function(err) {console.error('Async: Could not copy text: ', err);});            
+            |$('.toast').toast('show');});
+            |document.getElementById("ssh#{i}").addEventListener("click", function(){
+            |var copyText = document.getElementById("ssh#{i}");
+            |console.log(copyText.innerHTML)
+            |navigator.clipboard.writeText(copyText.innerHTML).then(function() {}, function(err) {console.error('Async: Could not copy text: ', err);});            
+            |$('.toast').toast('show');});
+
+    script
+        |$('#start').datepicker({uiLibrary: 'bootstrap4'});
+        |$('#end').datepicker({uiLibrary: 'bootstrap4'});

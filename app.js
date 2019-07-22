@@ -283,6 +283,12 @@ app.get(
 );
 
 app.get(
+  "/userInfrastructure",
+  passportConfig.isAuthenticated,
+  cloudController.getUserInfrastructure
+);
+
+app.get(
   "/deployInfrastructure",
   passportConfig.isAuthenticated,
   cloudController.getdeployInfrastructure

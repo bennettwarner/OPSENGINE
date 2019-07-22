@@ -7,7 +7,7 @@ block content
     br
     nav(aria-label='breadcrumb')
         ol.breadcrumb
-            li.breadcrumb-item.active(aria-current='page') Viewing: /loot
+            li.breadcrumb-item.active(aria-current='page') Viewing: #{path}
     .container
         .row
             .col-md-1
@@ -19,21 +19,29 @@ block content
                             th(scope='col') Size
                     tbody
                         each file, f in dir
-                            - sizekb = file.attrs["size"] / 1024
-                            - sizemb = file.attrs["size"] / 1024 / 1024
-                            - sizegb = file.attrs["size"] / 1024 / 1024 / 1024
-                            if sizegb >= 1.0
-                                - finalsize=Math.round(sizegb)+ ' GB'
-                            else if sizemb >= 1.0
-                                - finalsize=Math.round(sizemb)+ ' MB'
-                            else if sizekb >= 1.0
-                                - finalsize=Math.round(sizekb) + ' KB'
-                            else
-                                - finalsize='< 1 KB'
-                            tr
-                                td
-                                    h5
-                                        i.fas.fa-file
-                                        a(href='/getFile/'+server.id+'?file='+file.filename)=file.filename
-                                td
-                                    h5=finalsize
+                            if file.filename.charAt(0) != '.'
+                                - sizekb = file.attrs["size"] / 1024
+                                - sizemb = file.attrs["size"] / 1024 / 1024
+                                - sizegb = file.attrs["size"] / 1024 / 1024 / 1024
+                                if sizegb >= 1.0
+                                    - finalsize=Math.round(sizegb)+ ' GB'
+                                else if sizemb >= 1.0
+                                    - finalsize=Math.round(sizemb)+ ' MB'
+                                else if sizekb >= 1.0
+                                    - finalsize=Math.round(sizekb) + ' KB'
+                                else
+                                    - finalsize='< 1 KB'
+                                tr
+                                    td
+                                        h5
+                                            if file.attrs['size'] == '4096'
+                                                i.fas.fa-folder
+                                                a(href='/files/'+server.id+'?path='+current_dir+file.filename)=file.filename
+                                            else    
+                                                i.fas.fa-file
+                                                a(href='/getFile/'+server.id+'?file='+path+file.filename)=file.filename
+                                    td
+                                        if file.attrs['size'] == '4096'
+                                            h5 -
+                                        else
+                                            h5=finalsize

@@ -172,18 +172,29 @@ exports.getFiles = (req, res) => {
     if (err) {
       return next(err);
     }
+    directory = process.env.FILEMANAGER_PATH;
+    if (req.query.path) {
+      directory += req.query.path + "/";
+    }
     console.log(server);
     var conn = new Client();
     conn
       .on("ready", function() {
         conn.sftp(function(err, sftp) {
           if (err) throw err;
-          sftp.readdir("/root/", function(err, list) {
+          sftp.readdir(directory, function(err, list) {
             if (err) throw err;
+            if (req.query.path) {
+              current_dir = req.query.path + "/";
+            } else {
+              current_dir = "";
+            }
             res.render("infrastructure/files", {
               title: "Files",
               server: server,
-              dir: list
+              dir: list,
+              path: directory,
+              current_dir: current_dir
             });
             conn.end();
           });
@@ -203,21 +214,23 @@ exports.dlFile = (req, res) => {
     if (err) {
       return next(err);
     }
+    pathArray = req.query.file.split("/");
+    file = pathArray.pop();
     scp.scp(
       {
         host: server.ip,
         username: "root",
         password: server.creds,
-        path: "/root/" + req.query.file
+        path: file
       },
-      "./tmp/" + req.query.file,
+      "./tmp/" + file,
       function(err) {
-        res.set("Content-Disposition", "attachment;filename=" + req.query.file);
+        res.set("Content-Disposition", "attachment;filename=" + file);
         res.sendFile(
-          __dirname.substr(0, __dirname.length - 12) + "/tmp/" + req.query.file
+          __dirname.substr(0, __dirname.length - 12) + "/tmp/" + file
         );
         setTimeout(function() {
-          fs.unlink("./tmp/" + req.query.file, function(err) {
+          fs.unlink("./tmp/" + file, function(err) {
             if (err) throw err;
             // if no error, file has been deleted successfully
             console.log("File deleted!");
@@ -251,6 +264,27 @@ exports.postMetadata = (req, res, next) => {
       }
       req.flash("success", { msg: "Server metadata has been updated." });
       res.redirect("/infrastructure");
+    });
+  });
+};
+
+exports.getUserInfrastructure = (req, res, next) => {
+  Server.find({}, (err, servers) => {
+    User.find({}, (err, users) => {
+      api
+        .get("droplets?tag_name=" + process.env.DO_SERVERTAG, config)
+        .then(response => {
+          console.log(response.data.droplets);
+          res.render("infrastructure/userInfrastructure", {
+            title: "Infrastructure",
+            infrastructure: response.data.droplets,
+            users: users,
+            servers: servers
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     });
   });
 };
