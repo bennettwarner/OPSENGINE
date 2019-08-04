@@ -45,17 +45,17 @@ block content
       .col-md-7
         select.form-control(type='text', name='role', id='role', value=current_user.profile.role, autocomplete)
           if current_user.profile.role == '0'  
-            option(selected='selected') Global Admin
+            option(selected='selected', value='0') Global Admin
           else
-            option Global Admin
+            option(value='0') Global Admin
           if current_user.profile.role == '2'  
-            option(selected='selected') Provisioning Admin
+            option(selected='selected', value='2') Provisioning Admin
           else
-            option Provisioning Admin
+            option(value='2') Provisioning Admin
           if current_user.profile.role == '1'  
-            option(selected='selected') User
+            option(selected='selected', value='1') User
           else
-            option User
+            option(value='1') User
 
 
     .form-group

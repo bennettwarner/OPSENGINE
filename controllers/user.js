@@ -46,7 +46,7 @@ exports.postLogin = (req, res, next) => {
     }
     if (user.profile.state == false) {
       req.flash("errors", {
-        msg: "User not yet approved. Please contact the SPIKE team."
+        msg: "User not yet approved. Please contact the OPSENGINE team."
       });
       return res.redirect("/login");
     }
@@ -333,8 +333,8 @@ exports.postReset = (req, res, next) => {
     });
     const mailOptions = {
       to: user.email,
-      from: "SPIKE@a-lign.com",
-      subject: "Your SPIKE password has been changed",
+      from: "OPSENGINE@example.com",
+      subject: "Your OPSENGINE password has been changed",
       text: `Hello,\n\nThis is a confirmation that the password for your account ${
         user.email
       } has just been changed.\n`
@@ -447,8 +447,8 @@ exports.postForgot = (req, res, next) => {
     });
     const mailOptions = {
       to: user.email,
-      from: "SPIKE@a-lign.com",
-      subject: "Reset your password on SPIKE",
+      from: "OPSENGINE@example.com",
+      subject: "Reset your password on OPSENGINE",
       text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
         Please click on the following link, or paste this into your browser to complete the process:\n\n
         http://${req.headers.host}/reset/${token}\n\n
@@ -582,7 +582,7 @@ exports.deleteUser = (req, res) => {
 };
 
 /**
- * GET /user/edit/:id
+ * GET /users/edit/:id
  * Profile page.
  */
 exports.getEditUser = (req, res) => {
@@ -611,14 +611,8 @@ exports.postEditUser = (req, res, next) => {
       }
       user.profile.name = req.body.name || "";
       user.profile.title = req.body.title || "";
-      if (req.body.role == "Global Admin") {
-        user.profile.role = "0";
-      }
-      if (req.body.role == "Provisioning Admin") {
-        user.profile.role = "2";
-      } else {
-        user.profile.role = "1";
-      }
+      user.profile.role = req.body.role || "1";
+
       user.save(err => {
         if (err) {
           return next(err);

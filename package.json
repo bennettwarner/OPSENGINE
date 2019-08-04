@@ -1,7 +1,7 @@
 {
-  "name": "SPIKE",
+  "name": "OPSENGINE",
   "version": "1.0.0",
-  "description": "A web application to manage A-LIGN SPIKE devices",
+  "description": "A web application to manage offensive cyber operations",
   "repository": {
     "type": "git",
     "url": "https://github.com/bennettwarner/OPSENGINE.git"
