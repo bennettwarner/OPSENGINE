@@ -33,7 +33,7 @@ block content
                     tr
                         td
                             h6
-                                a(href="#/infrastructure/"+server.id)=server.name
+                                a(href="/infrastructure/"+server.id)=server.name
                         td 
                             h6
                                 span(id='ip'+i)=server.networks.v4[0].ip_address

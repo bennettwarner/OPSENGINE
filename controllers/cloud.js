@@ -61,7 +61,7 @@ exports.getdeployInfrastructure = (req, res, next) => {
 
 exports.postdeployInfrastructure = (req, res, next) => {
   var password =
-    "align" +
+    "OPSENGINE" +
     generator.generate({
       length: 8,
       numbers: true
@@ -280,6 +280,28 @@ exports.getUserInfrastructure = (req, res, next) => {
             infrastructure: response.data.droplets,
             users: users,
             servers: servers
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
+  });
+};
+
+exports.getServer = (req, res, next) => {
+  Server.findOne({ id: req.params.id }, (err, server) => {
+    console.log(server);
+    User.find({}, (err, users) => {
+      api
+        .get("droplets/" + server.id, config)
+        .then(response => {
+          console.log(response.data);
+          res.render("infrastructure/server", {
+            title: server.name,
+            users: users,
+            server: server,
+            droplet: response.data.droplet
           });
         })
         .catch(error => {

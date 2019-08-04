@@ -314,6 +314,12 @@ app.post(
   cloudController.postMetadata
 );
 
+app.get(
+  "/infrastructure/:id",
+  passportConfig.isAuthenticated,
+  cloudController.getServer
+);
+
 /**
  * API examples routes.
  */

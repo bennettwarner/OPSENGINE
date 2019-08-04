@@ -1,29 +1,19 @@
 extends ../layout
 
 block content
-  h1=implant.name
-  p.lead #{implant.client} - #{implant.consultant}
+  each user, u in users
+    if user._id == server.consultant
+      - user_name = user.profile.name || user.email
+
+  h1=server.name
+  p.lead #{server.client} - #{user_name}
   hr
   .row
     .col-md-2
     .col-md-8
       ul.list-group
-        li.list-group-item Id: #{implant._id}
-        li.list-group-item State: #{implant.status.state}
-        li.list-group-item Ship Date: #{implant.status.shipDate}
-        li.list-group-item Return Date: #{implant.status.returnDate}
-        li.list-group-item Online: #{implant.status.online}
-        li.list-group-item Public IP: #{implant.status.publicIP}
-        li.list-group-item Model: #{implant.model}
-        li.list-group-item Location: #{implant.location}
-        li.list-group-item Name: #{implant.pointOfContact.name}
-        li.list-group-item Number: #{implant.pointOfContact.number}
-        li.list-group-item Email: #{implant.pointOfContact.email}
-        li.list-group-item Consultant: #{implant.consultant}
-        li.list-group-item Internal IP: #{implant.networkConfig.internalIP}
-        li.list-group-item Subnet: #{implant.networkConfig.subnet}
-        li.list-group-item Gateway: #{implant.networkConfig.gateway}
-        li.list-group-item DNS 1: #{implant.networkConfig.dns1}
-        li.list-group-item DNS 2: #{implant.networkConfig.dns2}
-        li.list-group-item Notes: #{implant.notes}
+        li.list-group-item State: on
+        li.list-group-item Public IP: #{server.ip}
+        li.list-group-item Location: #{droplet.region.name.substr(0,droplet.region.name.length-2)}
+        li.list-group-item Notes: #{server.notes || ''}
   script(src='/js/demo.js')
