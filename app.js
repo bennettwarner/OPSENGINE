@@ -18,8 +18,9 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const expressValidator = require("express-validator");
 const sass = require("node-sass-middleware");
-const multer = require("multer");
+const ipfilter = require("express-ipfilter").IpFilter;
 
+const multer = require("multer");
 const upload = multer({ dest: path.join(__dirname, "uploads") });
 
 var dir = "./tmp";
@@ -75,6 +76,16 @@ app.set("host", "0.0.0.0");
 app.set("port", process.env.PORT || 8080);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+app.locals.env = process.env;
+if (process.env.ENABLE_WHITELIST == "true") {
+  console.log("IP Whitelist: %s", chalk.green("✓"));
+  var local_addrs = ["127.0.0.1", "::ffff:127.0.0.1", "::1"];
+  var ip_whitelist = process.env.WHITELIST_IPADDRS.split(",").concat(
+    local_addrs
+  );
+  console.log(ip_whitelist);
+  app.use(ipfilter(ip_whitelist, { mode: "allow" }));
+}
 app.use(compression());
 app.use(
   sass({
@@ -125,10 +136,7 @@ app.use((req, res, next) => {
     !req.path.match(/\./)
   ) {
     req.session.returnTo = req.originalUrl;
-  } else if (
-    req.user &&
-    (req.path === "/account" || req.path.match(/^\/api/))
-  ) {
+  } else if (req.user && req.path == "/account") {
     req.session.returnTo = req.originalUrl;
   }
   next();
@@ -324,7 +332,6 @@ app.get(
  * API examples routes.
  */
 app.get("/api", apiController.getApi);
-app.get("/api/scraping", apiController.getScraping);
 app.get("/api/upload", apiController.getFileUpload);
 app.post("/api/upload", upload.single("myFile"), apiController.postFileUpload);
 
@@ -351,8 +358,10 @@ app.use(function(req, res, next) {
  */
 app.listen(app.get("port"), () => {
   console.log(
-    "%s App is running at http://localhost:%d in %s mode",
+    "%s %s is running at %s:%d in %s mode",
     chalk.green("✓"),
+    process.env.PLATFORM,
+    process.env.BASE_URL,
     app.get("port"),
     app.get("env")
   );

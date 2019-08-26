@@ -7,6 +7,22 @@ const User = require("../models/User");
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
+var secure_smtp = "";
+if (process.env.SECURE_SMTP == "true") {
+  secure_smtp = "s";
+}
+var smtp_settings =
+  "smtp" +
+  secure_smtp +
+  "://" +
+  process.env.SMTP_USER +
+  ":" +
+  process.env.SMTP_PASS +
+  "@" +
+  process.env.SMTP_SERVER +
+  ":" +
+  process.env.SMTP_PORT;
+
 /**
  * GET /login
  * Login page.
@@ -324,20 +340,12 @@ exports.postReset = (req, res, next) => {
     if (!user) {
       return;
     }
-    let transporter = nodemailer.createTransport({
-      service: "SendGrid",
-      auth: {
-        user: process.env.SENDGRID_USER,
-        pass: process.env.SENDGRID_PASSWORD
-      }
-    });
+    let transporter = nodemailer.createTransport(smtp_settings);
     const mailOptions = {
       to: user.email,
-      from: "OPSENGINE@example.com",
+      from: process.env.FROM_EMAIL,
       subject: "Your OPSENGINE password has been changed",
-      text: `Hello,\n\nThis is a confirmation that the password for your account ${
-        user.email
-      } has just been changed.\n`
+      text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`
     };
     return transporter
       .sendMail(mailOptions)
@@ -438,17 +446,11 @@ exports.postForgot = (req, res, next) => {
       return;
     }
     const token = user.passwordResetToken;
-    let transporter = nodemailer.createTransport({
-      service: "SendGrid",
-      auth: {
-        user: process.env.SENDGRID_USER,
-        pass: process.env.SENDGRID_PASSWORD
-      }
-    });
+    let transporter = nodemailer.createTransport(smtp_settings);
     const mailOptions = {
       to: user.email,
-      from: "OPSENGINE@example.com",
-      subject: "Reset your password on OPSENGINE",
+      from: process.env.FROM_EMAIL,
+      subject: "Reset your password on " + process.env.PLATFORM,
       text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
         Please click on the following link, or paste this into your browser to complete the process:\n\n
         http://${req.headers.host}/reset/${token}\n\n
@@ -458,38 +460,11 @@ exports.postForgot = (req, res, next) => {
       .sendMail(mailOptions)
       .then(() => {
         req.flash("info", {
-          msg: `An e-mail has been sent to ${
-            user.email
-          } with further instructions.`
+          msg: `An e-mail has been sent to ${user.email} with further instructions.`
         });
       })
       .catch(err => {
-        if (err.message === "self signed certificate in certificate chain") {
-          console.log(
-            "WARNING: Self signed certificate in certificate chain. Retrying with the self signed certificate. Use a valid certificate if in production."
-          );
-          transporter = nodemailer.createTransport({
-            service: "SendGrid",
-            auth: {
-              user: process.env.SENDGRID_USER,
-              pass: process.env.SENDGRID_PASSWORD
-            },
-            tls: {
-              rejectUnauthorized: false
-            }
-          });
-          return transporter.sendMail(mailOptions).then(() => {
-            req.flash("info", {
-              msg: `An e-mail has been sent to ${
-                user.email
-              } with further instructions.`
-            });
-          });
-        }
-        console.log(
-          "ERROR: Could not send forgot password email after security downgrade.\n",
-          err
-        );
+        console.log(err);
         req.flash("errors", {
           msg:
             "Error sending the password reset message. Please try again shortly."

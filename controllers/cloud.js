@@ -61,7 +61,7 @@ exports.getdeployInfrastructure = (req, res, next) => {
 
 exports.postdeployInfrastructure = (req, res, next) => {
   var password =
-    "OPSENGINE" +
+    process.env.PLATFORM +
     generator.generate({
       length: 8,
       numbers: true
