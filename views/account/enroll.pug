@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+	.pb-2.mt-2.mb-4.border-bottom
+	h3 Enroll in 2FA
+	form(method='POST')
+		center
+			img(src=mfa_qr )
+			input(type='hidden', name='_csrf', value=_csrf)
+		.form-group.row
+			.col-md-2
+			label.col-md-3.col-form-label.font-weight-bold.text-right(for='mfa') Verify 2FA Code
+			.col-md-2
+				input.form-control(type='text', name='mfa_code', id='mfa_code', placeholder='000000', autofocus, autocomplete='mfa', required)
+				input(type='hidden', id='mfa_secret', name='mfa_secret', value=mfa_secret)
+
+		.form-group.row
+			.col-md-5
+			button.col-md-2.btn.btn-success(type='submit')
+				i.fas.fa-lock.fa-sm
+				| Enroll

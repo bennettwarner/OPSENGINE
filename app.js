@@ -16,7 +16,6 @@ const flash = require("express-flash");
 const path = require("path");
 const mongoose = require("mongoose");
 const passport = require("passport");
-const expressValidator = require("express-validator");
 const sass = require("node-sass-middleware");
 const ipfilter = require("express-ipfilter").IpFilter;
 
@@ -59,6 +58,7 @@ const app = express();
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 mongoose.set("useNewUrlParser", true);
+mongoose.set("useUnifiedTopology", true);
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on("error", err => {
   console.error(err);
@@ -96,7 +96,6 @@ app.use(
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(expressValidator());
 app.use(
   session({
     resave: true,
@@ -327,6 +326,28 @@ app.get(
   passportConfig.isAuthenticated,
   cloudController.getServer
 );
+
+app.get(
+  "/account/enroll",
+  passportConfig.isAuthenticated,
+  userController.getEnrollMFA
+);
+
+app.post(
+  "/account/enroll",
+  passportConfig.isAuthenticated,
+  userController.postEnrollMFA
+);
+
+app.get(
+  "/account/disableEnrollment",
+  passportConfig.isAuthenticated,
+  userController.getDisableEnrollment
+);
+
+app.get("/2fa", userController.getMFA);
+
+app.post("/2fa", userController.postMFA);
 
 /**
  * API examples routes.

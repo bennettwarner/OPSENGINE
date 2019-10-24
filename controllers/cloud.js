@@ -73,7 +73,7 @@ exports.postdeployInfrastructure = (req, res, next) => {
       {
         name: name,
         region: req.body.location,
-        size: "s-1vcpu-2gb",
+        size: process.env.DO_SERVERSIZE,
         image: req.body.image,
         backups: false,
         ipv6: false,

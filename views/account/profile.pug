@@ -79,9 +79,14 @@ block content
     .form-group
       p.offset-sm-3.col-md-7.pl-2 You will need the google authenticator app to continue.
       .offset-sm-3.col-md-7.pl-2
-        button.btn.btn-success
-          i.fas.fa-check.fa-sm
-          | Enroll in 2FA
+        if user.mfa_secret == null 
+          a.btn.btn-success(href='/account/enroll')
+            i.fas.fa-check.fa-sm
+            | Enroll in 2FA
+        else
+          a.btn.btn-danger(href='/account/disableEnrollment', onclick="return confirm('Are you sure you want to disable 2FA?')")
+            i.fas.fa-check.fa-sm
+            | Disable 2FA
 
   .pb-2.mt-2.mb-4.border-bottom
     h3 Delete Account

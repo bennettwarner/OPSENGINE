@@ -4,6 +4,8 @@ const nodemailer = require("nodemailer");
 const passport = require("passport");
 const _ = require("lodash");
 const User = require("../models/User");
+const validator = require("validator");
+var tfa = require("2fa");
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
@@ -41,16 +43,19 @@ exports.getLogin = (req, res) => {
  * Sign in using email and password.
  */
 exports.postLogin = (req, res, next) => {
-  req.assert("email", "Email is not valid").isEmail();
-  req.assert("password", "Password cannot be blank").notEmpty();
-  req.sanitize("email").normalizeEmail({ gmail_remove_dots: false });
+  const validationErrors = [];
+  if (!validator.isEmail(req.body.email))
+    validationErrors.push({ msg: "Please enter a valid email address." });
+  if (validator.isEmpty(req.body.password))
+    validationErrors.push({ msg: "Password cannot be blank." });
 
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash("errors", errors);
+  if (validationErrors.length) {
+    req.flash("errors", validationErrors);
     return res.redirect("/login");
   }
+  req.body.email = validator.normalizeEmail(req.body.email, {
+    gmail_remove_dots: false
+  });
 
   passport.authenticate("local", (err, user, info) => {
     if (err) {
@@ -62,9 +67,16 @@ exports.postLogin = (req, res, next) => {
     }
     if (user.profile.state == false) {
       req.flash("errors", {
-        msg: "User not yet approved. Please contact the OPSENGINE team."
+        msg:
+          "User not yet approved. Please contact the " +
+          process.env.COMPANY +
+          " team."
       });
       return res.redirect("/login");
+    }
+    if (user.mfa_secret != null) {
+      req.session.mfa_user = user._id;
+      return res.redirect("/2fa");
     }
     req.logIn(user, err => {
       if (err) {
@@ -108,19 +120,23 @@ exports.getSignup = (req, res) => {
  * Create a new local account.
  */
 exports.postSignup = (req, res, next) => {
-  req.assert("email", "Email is not valid").isEmail();
-  req.assert("password", "Password must be at least 4 characters long").len(4);
-  req
-    .assert("confirmPassword", "Passwords do not match")
-    .equals(req.body.password);
-  req.sanitize("email").normalizeEmail({ gmail_remove_dots: false });
+  const validationErrors = [];
+  if (!validator.isEmail(req.body.email))
+    validationErrors.push({ msg: "Please enter a valid email address." });
+  if (!validator.isLength(req.body.password, { min: 8 }))
+    validationErrors.push({
+      msg: "Password must be at least 8 characters long"
+    });
+  if (req.body.password !== req.body.confirmPassword)
+    validationErrors.push({ msg: "Passwords do not match" });
 
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash("errors", errors);
+  if (validationErrors.length) {
+    req.flash("errors", validationErrors);
     return res.redirect("/signup");
   }
+  req.body.email = validator.normalizeEmail(req.body.email, {
+    gmail_remove_dots: false
+  });
 
   User.findOne({}, (err, users) => {
     if (users == null) {
@@ -181,15 +197,17 @@ exports.getAccount = (req, res) => {
  * Update profile information.
  */
 exports.postUpdateProfile = (req, res, next) => {
-  req.assert("email", "Please enter a valid email address.").isEmail();
-  req.sanitize("email").normalizeEmail({ gmail_remove_dots: false });
+  const validationErrors = [];
+  if (!validator.isEmail(req.body.email))
+    validationErrors.push({ msg: "Please enter a valid email address." });
 
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash("errors", errors);
+  if (validationErrors.length) {
+    req.flash("errors", validationErrors);
     return res.redirect("/account");
   }
+  req.body.email = validator.normalizeEmail(req.body.email, {
+    gmail_remove_dots: false
+  });
 
   User.findById(req.user.id, (err, user) => {
     if (err) {
@@ -225,15 +243,16 @@ exports.postUpdateProfile = (req, res, next) => {
  * Update current password.
  */
 exports.postUpdatePassword = (req, res, next) => {
-  req.assert("password", "Password must be at least 4 characters long").len(4);
-  req
-    .assert("confirmPassword", "Passwords do not match")
-    .equals(req.body.password);
+  const validationErrors = [];
+  if (!validator.isLength(req.body.password, { min: 8 }))
+    validationErrors.push({
+      msg: "Password must be at least 8 characters long"
+    });
+  if (req.body.password !== req.body.confirmPassword)
+    validationErrors.push({ msg: "Passwords do not match" });
 
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash("errors", errors);
+  if (validationErrors.length) {
+    req.flash("errors", validationErrors);
     return res.redirect("/account");
   }
 
@@ -299,13 +318,18 @@ exports.getReset = (req, res, next) => {
  * Process the reset password request.
  */
 exports.postReset = (req, res, next) => {
-  req.assert("password", "Password must be at least 4 characters long.").len(4);
-  req.assert("confirm", "Passwords must match.").equals(req.body.password);
+  const validationErrors = [];
+  if (!validator.isLength(req.body.password, { min: 8 }))
+    validationErrors.push({
+      msg: "Password must be at least 8 characters long"
+    });
+  if (req.body.password !== req.body.confirm)
+    validationErrors.push({ msg: "Passwords do not match" });
+  if (!validator.isHexadecimal(req.params.token))
+    validationErrors.push({ msg: "Invalid Token.  Please retry." });
 
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash("errors", errors);
+  if (validationErrors.length) {
+    req.flash("errors", validationErrors);
     return res.redirect("back");
   }
 
@@ -413,15 +437,17 @@ exports.getForgot = (req, res) => {
  * Create a random token, then the send user an email with a reset link.
  */
 exports.postForgot = (req, res, next) => {
-  req.assert("email", "Please enter a valid email address.").isEmail();
-  req.sanitize("email").normalizeEmail({ gmail_remove_dots: false });
+  const validationErrors = [];
+  if (!validator.isEmail(req.body.email))
+    validationErrors.push({ msg: "Please enter a valid email address." });
 
-  const errors = req.validationErrors();
-
-  if (errors) {
-    req.flash("errors", errors);
+  if (validationErrors.length) {
+    req.flash("errors", validationErrors);
     return res.redirect("/forgot");
   }
+  req.body.email = validator.normalizeEmail(req.body.email, {
+    gmail_remove_dots: false
+  });
 
   const createRandomToken = randomBytesAsync(16).then(buf =>
     buf.toString("hex")
@@ -618,5 +644,134 @@ exports.retro = (req, res, next) => {
       req.flash("success", { msg: "Profile information has been updated." });
       res.redirect("/");
     });
+  });
+};
+
+exports.getEnrollMFA = (req, res) => {
+  User.findById(req.user.id, (err, user) => {
+    if (err) {
+      return next(err);
+    }
+    if (user.mfa_secret != null) {
+      req.flash("errors", {
+        msg: "Already enrolled!"
+      });
+      res.redirect("/account");
+    } else {
+      tfa.generateKey(32, function(err, key) {
+        // generate a google QR code so the user can save their new key
+        // tfa.generateGoogleQR(name, accountname, secretkey, cb)
+        tfa.generateGoogleQR(process.env.COMPANY, user.email, key, function(
+          err,
+          qr
+        ) {
+          //DELETE THIS for production
+          // ##############################################
+          // ############
+          // data URL png image for google authenticator
+          var counter = Math.floor(Date.now() / 1000 / 30);
+          // generate a valid code (in real-life this will be user-input)
+          var code = tfa.generateCode(key, counter);
+          console.log(code);
+          // ############
+          // ##############################################
+
+          res.render("account/enroll", {
+            title: "Enroll in 2FA",
+            mfa_secret: key,
+            mfa_qr: qr
+          });
+        });
+      });
+    }
+  });
+};
+
+exports.postEnrollMFA = (req, res) => {
+  User.findById(req.user.id, (err, user) => {
+    if (err) {
+      return next(err);
+    }
+    if (user.mfa_secret != null) {
+      req.flash("errors", {
+        msg: "Already enrolled!"
+      });
+      res.redirect("/account");
+    } else {
+      var validTOTP = tfa.verifyTOTP(req.body.mfa_secret, req.body.mfa_code);
+      console.log(validTOTP);
+
+      if (!validTOTP) {
+        req.flash("errors", { msg: "Enrollment failed! Please try again." });
+        res.redirect("/account");
+      } else {
+        user.mfa_secret = req.body.mfa_secret;
+        user.save(err => {
+          if (err) {
+            return next(err);
+          }
+          req.flash("success", {
+            msg: "Enrollment successful!"
+          });
+          res.redirect("/account");
+        });
+      }
+    }
+  });
+};
+
+/**
+ * GET /users/edit/:id
+ * Profile page.
+ */
+exports.getDisableEnrollment = (req, res) => {
+  User.findById(req.user.id, (err, user) => {
+    if (err) {
+      return next(err);
+    }
+    user.mfa_secret = undefined;
+    user.save(err => {
+      if (err) {
+        return next(err);
+      }
+      req.flash("success", {
+        msg: "2FA Disabled!"
+      });
+      res.redirect("/account");
+    });
+  });
+};
+
+exports.getMFA = (req, res) => {
+  if (req.user) {
+    return res.redirect("/");
+  }
+  res.render("account/mfa", {
+    title: "2FA Login"
+  });
+};
+
+exports.postMFA = (req, res) => {
+  if (req.user) {
+    return res.redirect("/");
+  }
+  User.findById(req.session.mfa_user, (err, user) => {
+    if (err) {
+      return next(err);
+    }
+    var validTOTP = tfa.verifyTOTP(user.mfa_secret, req.body.mfa);
+
+    if (validTOTP) {
+      req.logIn(user, err => {
+        if (err) {
+          return next(err);
+        }
+        req.flash("success", { msg: "Success! You are logged in." });
+        res.redirect(req.session.returnTo || "/");
+      });
+    } else {
+      req.flash("errors", { msg: "Invalid 2FA token" });
+      res.redirect("/login");
+    }
   });
 };
