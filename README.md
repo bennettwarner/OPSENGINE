@@ -1,4 +1,4 @@
-# Welcome to OPSENGINE 👋
+# Welcome to OPSENGINE 💾
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000)
 ![Prerequisite](https://img.shields.io/badge/node-%3E%3D8.16.0-blue.svg)
 ![Prerequisite](https://img.shields.io/badge/npm-%3E%3D6.4.1-blue.svg)
@@ -26,9 +26,9 @@ npm run start
 
 ## Contributors
 
-* [@bennettwarner](https://github.com/bennettwarner)
-* [@tnkr](https://github.com/tnkr)
-* [@w0rtw0rt](https://github.com/w0rtw0rt)
+* [@bennettwarner](https://github.com/bennettwarner)😝
+* [@tnkr](https://github.com/tnkr) 😡
+* [@w0rtw0rt](https://github.com/w0rtw0rt)⚠️
 
 ## Show your support
 
