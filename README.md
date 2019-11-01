@@ -26,16 +26,10 @@ npm run start
 
 ## Contributors
 
-👤 **Bennett Warner**
-
-* Website: http://bennettwarner.com
-* Twitter: [@b_e_n](https://twitter.com/b_e_n)
-* Github: [@bennettwarner](https://github.com/bennettwarner)
+* [@bennettwarner](https://github.com/bennettwarner)
+* [@tnkr](https://github.com/tnkr)
+* [@w0rtw0rt](https://github.com/w0rtw0rt)
 
 ## Show your support
 
 Give a ⭐️ if this project helped you!
-
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
