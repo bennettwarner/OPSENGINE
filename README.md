@@ -4,7 +4,6 @@
 ![Prerequisite](https://img.shields.io/badge/npm-%3E%3D6.4.1-blue.svg)
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://github.com/bennettwarner/OPSENGINE#readme)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/bennettwarner/OPSENGINE/graphs/commit-activity)
-[![Twitter: b_e_n](https://img.shields.io/twitter/follow/b_e_n.svg?style=social)](https://twitter.com/b_e_n)
 
 > A web application to manage offensive cyber operations
 
@@ -25,7 +24,7 @@ npm install
 npm run start
 ```
 
-## Author
+## Contributors
 
 👤 **Bennett Warner**
 
