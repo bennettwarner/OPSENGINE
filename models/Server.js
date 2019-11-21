@@ -9,8 +9,8 @@ const serverSchema = new mongoose.Schema(
     client: String,
     creds: String,
     project: {
-      start: Date,
-      end: Date
+      start: String,
+      end: String
     },
     notes: String
   },

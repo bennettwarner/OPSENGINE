@@ -254,8 +254,8 @@ exports.postMetadata = (req, res, next) => {
     console.dir(req.body);
     server.consultant = req.body.consultant || "";
     server.client = req.body.client || "";
-    // server.project.start = new Date(req.body.start).toUTCString() || "";
-    //server.project.end = new Date(req.body.end).toUTCString() || "";
+    server.project.start = req.body.start || "";
+    server.project.end = req.body.end || "";
     server.notes = req.body.notes || "";
 
     server.save(err => {

@@ -757,9 +757,15 @@ exports.postMFA = (req, res) => {
   }
   User.findById(req.session.mfa_user, (err, user) => {
     if (err) {
+      console.log(err);
       return next(err);
     }
-    var validTOTP = tfa.verifyTOTP(user.mfa_secret, req.body.mfa);
+
+    try {
+      var validTOTP = tfa.verifyTOTP(user.mfa_secret, req.body.mfa);
+    } catch {
+      console.log("2FA unable to validate!");
+    }
 
     if (validTOTP) {
       req.logIn(user, err => {
