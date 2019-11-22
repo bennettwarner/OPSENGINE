@@ -2,16 +2,13 @@ extends layout
 
 block content
   h1 Hack Harder
-  p.lead A sentence will go here.
   hr
+  br
+  br
   .row
-    .col-md-6
-      h2 My Implants
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-      p
-        a.btn.btn-raised(href='#', role='button') View details »
-    .col-md-6
-      h2 Status
-      p Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-      p
-        a.btn.btn-raised(href='#', role='button') View details »
+    .col-md-12.text-center
+      h2#meme 
+block scripts
+
+  script var memes = [  "Mining bitcoin...",  "Dividing by 0...",  "Initialising Skynet...",  "[REDACTED]",  "Downloading more RAM...",  "Ordering 1s and 0s...",  "Navigating neural network...",  "Importing machine learning...",  "Issuing Alice and Bob one-time pads...",  "Generating key material by trying to escape vim...",  "(creating unresolved tension...",  "Symlinking emacs and vim to nano...",  "Speculatively executing recipes...",  "Resurrecting dead memes",  "l o a d i n g a e s t h e t i c s",  "Doing a barrel roll",  "Becoming human",  "Dankifying memes",  "Sacrificing to slender man",  "Summoning Cthulhu",  "Pirating Nickleback",  "Asking for help on the Arch Linux user forums",  "Hacking the Gibson",  "Solving CAPTCHAs",  "Doxing user on 4chan",  "Loading punch cards",  "Calling the internet police",  "Browsing SkyMall",  "git clone communism",  "@ tweeting Nancy Grace",  "Investing in bitcoin cash",  "Downloading a car",  "It is now safe to turn off your computer"]
+  script document.getElementById("meme").textContent=memes[Math.floor(Math.random()*memes.length)]
