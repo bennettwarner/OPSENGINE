@@ -20,12 +20,22 @@ exports.getInfrastructure = (req, res, next) => {
   Server.find({}, (err, servers) => {
     User.find({}, (err, users) => {
       api
-        .get("droplets?tag_name=" + process.env.DO_SERVERTAG, config)
+        .get("droplets", config)
         .then(response => {
           console.log(response.data.droplets);
+          droplets = [];
+          for (x in response.data.droplets) {
+            if (
+              response.data.droplets[x].tags[0] == process.env.DO_SERVERTAG ||
+              response.data.droplets[x].tags[0] == "vpngateway"
+            ) {
+              droplets.push(response.data.droplets[x]);
+              console.log(response.data.droplets[x]);
+            }
+          }
           res.render("infrastructure/infrastructure", {
             title: "Infrastructure",
-            infrastructure: response.data.droplets,
+            infrastructure: droplets,
             users: users,
             servers: servers
           });
@@ -44,13 +54,16 @@ exports.getdeployInfrastructure = (req, res, next) => {
       all_images = response.data.images;
       images = [];
       for (x in all_images) {
-        if (all_images[x].type == "snapshot") {
+        if (
+          all_images[x].type == "snapshot" &&
+          all_images[x].name != "vpngateway-1911"
+        ) {
           images.push(all_images[x]);
           console.log(all_images[x]);
         }
       }
       res.render("infrastructure/create", {
-        title: "Deploy Infrastructure",
+        title: "Deploy Server",
         images: images
       });
     })
@@ -101,7 +114,8 @@ exports.postdeployInfrastructure = (req, res, next) => {
               ip: response2.data.droplet.networks.v4[0].ip_address,
               name: name,
               consultant: req.user._id,
-              creds: password
+              creds: password,
+              type: "standard"
             });
             server.save(err => {
               console.log(response2.data.droplet);
@@ -111,6 +125,75 @@ exports.postdeployInfrastructure = (req, res, next) => {
                 password: password,
                 ip: response2.data.droplet.networks.v4,
                 id: response2.data.droplet.id
+              });
+            });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }, 5000);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+exports.getdeployGateway = (req, res, next) => {
+  res.render("infrastructure/createGateway", {
+    title: "Deploy Gateway"
+  });
+};
+exports.postdeployGateway = (req, res, next) => {
+  var password =
+    process.env.PLATFORM +
+    generator.generate({
+      length: 8,
+      numbers: true
+    });
+  name = req.body.name.replace(/\W/g, "");
+  api
+    .post(
+      "droplets",
+      {
+        name: name,
+        region: req.body.location,
+        size: "s-1vcpu-2gb",
+        image: "55279322",
+        backups: false,
+        ipv6: false,
+        user_data:
+          `#!/bin/bash
+        sudo echo -e "` +
+          password +
+          "\n" +
+          password +
+          `" | passwd root
+          sudo bash /root/vpn.sh
+          `,
+        private_networking: null,
+        volumes: null,
+        tags: ["vpngateway"]
+      },
+      config
+    )
+    .then(response => {
+      server_id = response.data.droplet.id;
+      setTimeout(function() {
+        api
+          .get("droplets/" + server_id, config)
+          .then(response2 => {
+            const server = new Server({
+              id: response2.data.droplet.id,
+              ip: response2.data.droplet.networks.v4[0].ip_address,
+              name: name,
+              consultant: req.user._id,
+              creds: password,
+              type: "gateway"
+            });
+            server.save(err => {
+              console.log(response2.data.droplet);
+              res.render("infrastructure/createGatewaySuccess", {
+                title: "VPN Deployed",
+                name: name
               });
             });
           })
@@ -272,12 +355,22 @@ exports.getUserInfrastructure = (req, res, next) => {
   Server.find({}, (err, servers) => {
     User.find({}, (err, users) => {
       api
-        .get("droplets?tag_name=" + process.env.DO_SERVERTAG, config)
+        .get("droplets", config)
         .then(response => {
           console.log(response.data.droplets);
+          droplets = [];
+          for (x in response.data.droplets) {
+            if (
+              response.data.droplets[x].tags[0] == process.env.DO_SERVERTAG ||
+              response.data.droplets[x].tags[0] == "vpngateway"
+            ) {
+              droplets.push(response.data.droplets[x]);
+              console.log(response.data.droplets[x]);
+            }
+          }
           res.render("infrastructure/userInfrastructure", {
             title: "Infrastructure",
-            infrastructure: response.data.droplets,
+            infrastructure: droplets,
             users: users,
             servers: servers
           });

@@ -39,13 +39,13 @@
                 .dropdown-menu(aria-labelledby='navbarDropdown')
                   a.dropdown-item(href='/userInfrastructure/') My Infrastructure
                   a.dropdown-item(href='/infrastructure') All Infrastructure
-                  a.dropdown-item(href='/deployInfrastructure') Deploy Infrastructure
+                  a.dropdown-item(href='/deployInfrastructure') Deploy Server
+                  a.dropdown-item(href='/deployGateway') Deploy Gateway
               li.nav-item.dropdown.hoverdrop
                 a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                   | Tools
                 .dropdown-menu(aria-labelledby='navbarDropdown')
                   a.dropdown-item(href='https://gophish.a-lignpt.com:3333') Phishing
-                  a.dropdown-item(href='https://github.com/SerpicoProject/Serpico') Reporting
           ul.nav.navbar-nav.ml-auto
             if !user
               li.nav-item(class=(title === 'Login') ? 'active' : undefined)
@@ -91,13 +91,13 @@
                 .dropdown-menu(aria-labelledby='navbarDropdown')
                   a.dropdown-item(href='/userInfrastructure/') My Infrastructure
                   a.dropdown-item(href='/infrastructure') All Infrastructure
-                  a.dropdown-item(href='/deployInfrastructure') Deploy Infrastructure
+                  a.dropdown-item(href='/deployInfrastructure') Deploy Server
+                  a.dropdown-item(href='/deployGateway') Deploy Gateway
               li.nav-item.dropdown.hoverdrop
                 a#navbarDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                   | Tools
                 .dropdown-menu(aria-labelledby='navbarDropdown')
                   a.dropdown-item(href='https://gophish.a-lignpt.com:3333') Phishing
-                  a.dropdown-item(href='https://github.com/SerpicoProject/Serpico') Reporting
           ul.nav.navbar-nav.ml-auto
             if !user
               li.nav-item(class=(title === 'Login') ? 'active' : undefined)

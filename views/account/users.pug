@@ -11,6 +11,7 @@ block content
                 th(scope='col') Email
                 th(scope='col') State
                 th(scope='col') Role
+                th(scope='col') 2FA Enabled
                 th(scope='col')
         tbody
             each user, i in users
@@ -34,6 +35,13 @@ block content
                             h6 Provisioning Admin
                         else
                             h6 User
+                    td.text-center
+                        if user.mfa_secret == null
+                            h6
+                                i.text-danger.fas.fa-times
+                        else
+                            h6 
+                                i.text-success.fas.fa-check
                     td.text-center
                         if i == 0
                             button.btn.btn-light(role='button', disabled='disabled') Disable Account

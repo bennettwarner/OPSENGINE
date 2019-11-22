@@ -349,6 +349,18 @@ app.get("/2fa", userController.getMFA);
 
 app.post("/2fa", userController.postMFA);
 
+app.get(
+  "/deployGateway",
+  passportConfig.isAuthenticated,
+  cloudController.getdeployGateway
+);
+
+app.post(
+  "/deployGateway",
+  passportConfig.isAuthenticated,
+  cloudController.postdeployGateway
+);
+
 /**
  * API examples routes.
  */

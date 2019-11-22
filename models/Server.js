@@ -12,7 +12,8 @@ const serverSchema = new mongoose.Schema(
       start: String,
       end: String
     },
-    notes: String
+    notes: String,
+    type: String
   },
   { timestamps: true }
 );

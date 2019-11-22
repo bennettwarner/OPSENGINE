@@ -1,21 +1,15 @@
 extends ../layout
 
 block content
-	h3 Deploy Server
+	h3 Deploy Gateway
 	hr
 	br
-	form(action='/deployInfrastructure', method='POST')
+	form(action='/deployGateway', method='POST')
 		input(type='hidden', name='_csrf', value=_csrf)
 		.form-group.row
-			label.col-md-3.col-form-label.font-weight-bold.text-right(for='name') Server Name
+			label.col-md-3.col-form-label.font-weight-bold.text-right(for='name') Gateway Name
 			.col-md-7
-				input.form-control(type='text', name='name', id='name', required, placeholder='jumpbox001', autocomplete='name')
-		.form-group.row
-			label.col-md-3.col-form-label.font-weight-bold.text-right(for='image') Image
-			.col-md-7
-				select.form-control(type='text', name='image', id='image', value='image', autocomplete)
-					each image, i in images
-						option(value=image.id)=image.name
+				input.form-control(type='text', name='name', id='name', required, placeholder='gateway001', autocomplete='name')
 		.form-group.row
 			label.col-md-3.col-form-label.font-weight-bold.text-right(for='location') Location
 			.col-md-7

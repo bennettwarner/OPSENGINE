@@ -8,12 +8,14 @@ block content
             tr
                 th(scope='col') Name
                 th(scope='col') IP Address
+                th(scope='col') Type
                 th(scope='col') Consultant
                 th(scope='col') Client
                 th(scope='col') Location
                 th(scope='col')
         tbody
             each server, i in infrastructure
+                - type = ''
                 - client = ''
                 - consultant = ''
                 - consultant_id = ''
@@ -21,6 +23,7 @@ block content
                 - notes = ''
                 each record, r in servers
                     if record.id == server.id
+                        - type = record.type
                         - client = record.client
                         - consultant = record.consultant
                         - consultant_id = record.consultant
@@ -37,24 +40,40 @@ block content
                         h6
                             span(id='ip'+i)=server.networks.v4[0].ip_address
                     td
+                        if type == 'gateway'
+                            h6 Gateway
+                        else
+                            h6 Server
+                    td
                         h6=consultant
                     td
                         h6=client
                     td
                         h6=server.region.name.substr(0,server.region.name.length-2)
-                    td
-                        .dropdown
-                            a#dropdownMenuLink.btn.btn-secondary.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-                                | Access 
-                            .dropdown-menu(aria-labelledby='dropdownMenuLink')
-                                a.dropdown-item(href="/shell/"+server.id) Launch Shell
-                                a.dropdown-item(data-toggle='modal', href='#credsModal'+i) Get Credentials
-                                a.dropdown-item(data-toggle='modal', href='#sshModal'+i) Connect Via SSH
-                                a.dropdown-item(href='/rdpgen/'+server.networks.v4[0].ip_address) Connect Via RDP
-                                a.dropdown-item(href="/files/"+server.id) Manage Files
-                                .dropdown-divider
-                                a.dropdown-item(data-toggle='modal', href='#editModal'+i) Edit Metadata
-                                a.dropdown-item(data-toggle='modal', href='#deleteModal'+i) Delete
+                    if type == 'gateway'
+                        td
+                            .dropdown
+                                a#dropdownMenuLink.btn.btn-secondary.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                    | Access 
+                                .dropdown-menu(aria-labelledby='dropdownMenuLink')
+                                    a.dropdown-item(href="/getFile/"+server.id+"?file=/root/client.ovpn") Download VPN Config
+                                    .dropdown-divider
+                                    a.dropdown-item(data-toggle='modal', href='#editModal'+i) Edit Metadata
+                                    a.dropdown-item(data-toggle='modal', href='#deleteModal'+i) Delete
+                    else
+                        td
+                            .dropdown
+                                a#dropdownMenuLink.btn.btn-secondary.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                    | Access 
+                                .dropdown-menu(aria-labelledby='dropdownMenuLink')
+                                    a.dropdown-item(href="/shell/"+server.id) Launch Shell
+                                    a.dropdown-item(data-toggle='modal', href='#credsModal'+i) Get Credentials
+                                    a.dropdown-item(data-toggle='modal', href='#sshModal'+i) Connect Via SSH
+                                    a.dropdown-item(href='/rdpgen/'+server.networks.v4[0].ip_address) Connect Via RDP
+                                    a.dropdown-item(href="/files/"+server.id) Manage Files
+                                    .dropdown-divider
+                                    a.dropdown-item(data-toggle='modal', href='#editModal'+i) Edit Metadata
+                                    a.dropdown-item(data-toggle='modal', href='#deleteModal'+i) Delete
                 div.modal.fade(id='credsModal'+i, tabindex='-1', role='dialog', aria-hidden='true')
                     .modal-dialog(role='document')
                         .modal-content
