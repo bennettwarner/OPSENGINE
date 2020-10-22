@@ -28,7 +28,6 @@ npm run start
 
 * [@bennettwarner](https://github.com/bennettwarner)😝
 * [@tnkr](https://github.com/tnkr) 😡
-* [@w0rtw0rt](https://github.com/w0rtw0rt)⚠️
 
 ## Show your support
 
