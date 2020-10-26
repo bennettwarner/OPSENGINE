@@ -20,7 +20,7 @@ exports.getInfrastructure = (req, res, next) => {
   Server.find({}, (err, servers) => {
     User.find({}, (err, users) => {
       api
-        .get("droplets", config)
+        .get("droplets?per_page=100", config)
         .then(response => {
           console.log(response.data.droplets);
           droplets = [];
@@ -111,7 +111,7 @@ exports.postdeployInfrastructure = (req, res, next) => {
           .then(response2 => {
             const server = new Server({
               id: response2.data.droplet.id,
-              ip: response2.data.droplet.networks.v4[0].ip_address,
+              ip: response2.data.droplet.networks.v4[1].ip_address,
               name: name,
               consultant: req.user._id,
               creds: password,
@@ -183,7 +183,7 @@ exports.postdeployGateway = (req, res, next) => {
           .then(response2 => {
             const server = new Server({
               id: response2.data.droplet.id,
-              ip: response2.data.droplet.networks.v4[0].ip_address,
+              ip: response2.data.droplet.networks.v4[1].ip_address,
               name: name,
               consultant: req.user._id,
               creds: password,
@@ -355,7 +355,7 @@ exports.getUserInfrastructure = (req, res, next) => {
   Server.find({}, (err, servers) => {
     User.find({}, (err, users) => {
       api
-        .get("droplets", config)
+        .get("droplets?per_page=100", config)
         .then(response => {
           console.log(response.data.droplets);
           droplets = [];
